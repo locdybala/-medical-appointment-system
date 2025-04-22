@@ -18,7 +18,7 @@
                 @csrf
                 <div class="form-group">
                     <label for="name">Tên chuyên khoa <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                    <input type="text" class="form-control @error('name') is-invalid @enderror"
                         id="name" name="name" value="{{ old('name') }}" required>
                     @error('name')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -27,7 +27,7 @@
 
                 <div class="form-group">
                     <label for="description">Mô tả</label>
-                    <textarea class="form-control @error('description') is-invalid @enderror" 
+                    <textarea class="form-control @error('description') is-invalid @enderror"
                         id="description" name="description" rows="3">{{ old('description') }}</textarea>
                     @error('description')
                         <span class="invalid-feedback">{{ $message }}</span>
@@ -42,7 +42,7 @@
                                 <i id="icon-preview" class="fas fa-stethoscope"></i>
                             </span>
                         </div>
-                        <input type="text" class="form-control @error('icon') is-invalid @enderror" 
+                        <input type="text" class="form-control @error('icon') is-invalid @enderror"
                             id="icon" name="icon" value="{{ old('icon', 'fas fa-stethoscope') }}"
                             placeholder="Ví dụ: fas fa-stethoscope">
                     </div>
@@ -56,7 +56,7 @@
 
                 <div class="form-group">
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1" 
+                        <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1"
                             {{ old('is_active', true) ? 'checked' : '' }}>
                         <label class="custom-control-label" for="is_active">Trạng thái hoạt động</label>
                     </div>
@@ -82,4 +82,4 @@
             });
         });
     </script>
-@stop 
+@stop

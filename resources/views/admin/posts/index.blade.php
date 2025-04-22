@@ -1,6 +1,8 @@
-@extends('layouts.admin')
+@extends('adminlte::page')
 
-@section('content')
+@section('title', 'Quản lý bài viết')
+
+@section('content_header')
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -45,10 +47,10 @@
                                 <td>{{ $post->id }}</td>
                                 <td>
                                     @if($post->featured_image)
-                                        <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}" 
+                                        <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
                                             style="width: 50px; height: 50px; object-fit: cover;">
                                     @else
-                                        <img src="{{ asset('adminlte/dist/img/no-image.png') }}" alt="No image" 
+                                        <img src="{{ asset('adminlte/dist/img/no-image.png') }}" alt="No image"
                                             style="width: 50px; height: 50px; object-fit: cover;">
                                     @endif
                                 </td>
@@ -110,4 +112,4 @@
         });
     });
 </script>
-@endpush 
+@endpush

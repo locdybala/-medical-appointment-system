@@ -10,14 +10,13 @@ return new class extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone')->nullable();
-            $table->text('address')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('specialty_id')->constrained()->onDelete('cascade');
             $table->foreignId('room_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('phone');
+            $table->text('address');
             $table->string('qualification');
-            $table->integer('experience')->nullable();
+            $table->string('experience');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -27,4 +26,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('doctors');
     }
-}; 
+};

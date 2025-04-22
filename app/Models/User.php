@@ -23,7 +23,8 @@ class User extends Authenticatable
         'password',
         'phone',
         'address',
-        'avatar'
+        'avatar',
+        'role'
     ];
 
     /**
@@ -46,25 +47,19 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function roles()
+    public function isAdmin()
     {
-        return $this->belongsToMany(Role::class);
+        return $this->role === 'admin';
     }
 
-    public function hasRole($role)
+    public function isDoctor()
     {
-        if (is_string($role)) {
-            return $this->roles->contains('slug', $role);
-        }
-        return !! $role->intersect($this->roles)->count();
+        return $this->role === 'doctor';
     }
 
-    public function assignRole($role)
+    public function isPatient()
     {
-        if (is_string($role)) {
-            $role = Role::where('slug', $role)->firstOrFail();
-        }
-        $this->roles()->syncWithoutDetaching($role);
+        return $this->role === 'patient';
     }
 
     public function doctor()

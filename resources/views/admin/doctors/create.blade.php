@@ -20,7 +20,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="name">Tên bác sĩ <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('name') is-invalid @enderror"
                                 id="name" name="name" value="{{ old('name') }}" required>
                             @error('name')
                                 <span class="invalid-feedback">{{ $message }}</span>
@@ -29,7 +29,7 @@
 
                         <div class="form-group">
                             <label for="email">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                            <input type="email" class="form-control @error('email') is-invalid @enderror"
                                 id="email" name="email" value="{{ old('email') }}" required>
                             @error('email')
                                 <span class="invalid-feedback">{{ $message }}</span>
@@ -38,18 +38,9 @@
 
                         <div class="form-group">
                             <label for="phone">Số điện thoại <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('phone') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('phone') is-invalid @enderror"
                                 id="phone" name="phone" value="{{ old('phone') }}" required>
                             @error('phone')
-                                <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label for="address">Địa chỉ</label>
-                            <textarea class="form-control @error('address') is-invalid @enderror" 
-                                id="address" name="address" rows="3">{{ old('address') }}</textarea>
-                            @error('address')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
@@ -58,7 +49,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="specialty_id">Chuyên khoa <span class="text-danger">*</span></label>
-                            <select class="form-control @error('specialty_id') is-invalid @enderror" 
+                            <select class="form-control @error('specialty_id') is-invalid @enderror"
                                 id="specialty_id" name="specialty_id" required>
                                 <option value="">Chọn chuyên khoa</option>
                                 @foreach($specialties as $specialty)
@@ -73,9 +64,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="room_id">Phòng khám <span class="text-danger">*</span></label>
-                            <select class="form-control @error('room_id') is-invalid @enderror" 
-                                id="room_id" name="room_id" required>
+                            <label for="room_id">Phòng khám</label>
+                            <select class="form-control @error('room_id') is-invalid @enderror"
+                                id="room_id" name="room_id">
                                 <option value="">Chọn phòng khám</option>
                                 @foreach($rooms as $room)
                                     <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
@@ -90,7 +81,7 @@
 
                         <div class="form-group">
                             <label for="qualification">Bằng cấp <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('qualification') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('qualification') is-invalid @enderror"
                                 id="qualification" name="qualification" value="{{ old('qualification') }}" required>
                             @error('qualification')
                                 <span class="invalid-feedback">{{ $message }}</span>
@@ -98,8 +89,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="experience">Kinh nghiệm (năm)</label>
-                            <input type="number" class="form-control @error('experience') is-invalid @enderror" 
+                            <label for="experience">Kinh nghiệm</label>
+                            <input type="text" class="form-control @error('experience') is-invalid @enderror"
                                 id="experience" name="experience" value="{{ old('experience') }}">
                             @error('experience')
                                 <span class="invalid-feedback">{{ $message }}</span>
@@ -107,8 +98,17 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="description">Mô tả</label>
+                            <textarea class="form-control @error('description') is-invalid @enderror"
+                                id="description" name="description" rows="3">{{ old('description') }}</textarea>
+                            @error('description')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1" 
+                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1"
                                     {{ old('is_active', true) ? 'checked' : '' }}>
                                 <label class="custom-control-label" for="is_active">Trạng thái hoạt động</label>
                             </div>
@@ -124,4 +124,4 @@
             </form>
         </div>
     </div>
-@stop 
+@stop

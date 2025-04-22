@@ -12,23 +12,16 @@ class Appointment extends Model
     protected $fillable = [
         'patient_id',
         'doctor_id',
-        'schedule_id',
         'appointment_date',
         'appointment_time',
-        'status',
-        'reason',
-        'notes',
-        'prescription',
-        'diagnosis',
         'fee',
         'is_paid',
+        'notes',
     ];
 
     protected $casts = [
         'appointment_date' => 'date',
-        'appointment_time' => 'datetime:H:i',
         'is_paid' => 'boolean',
-        'fee' => 'decimal:2',
     ];
 
     public function patient()
@@ -39,11 +32,6 @@ class Appointment extends Model
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
-    }
-
-    public function schedule()
-    {
-        return $this->belongsTo(Schedule::class);
     }
 
     public function getStatusBadgeAttribute()
@@ -73,4 +61,4 @@ class Appointment extends Model
 
         return $texts[$this->status] ?? 'Không xác định';
     }
-} 
+}

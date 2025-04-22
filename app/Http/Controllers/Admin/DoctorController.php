@@ -33,7 +33,10 @@ class DoctorController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|string|max:20',
             'specialty_id' => 'required|exists:specialties,id',
-            'room_id' => 'required|exists:rooms,id',
+            'room_id' => 'nullable|exists:rooms,id',
+            'qualification' => 'required|string',
+            'experience' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'boolean'
         ]);
 
@@ -54,6 +57,9 @@ class DoctorController extends Controller
             'user_id' => $user->id,
             'specialty_id' => $request->specialty_id,
             'room_id' => $request->room_id,
+            'qualification' => $request->qualification,
+            'experience' => $request->experience,
+            'description' => $request->description,
             'is_active' => $request->is_active ?? true
         ]);
 
@@ -75,7 +81,10 @@ class DoctorController extends Controller
             'email' => 'required|email|unique:users,email,' . $doctor->user_id,
             'phone' => 'required|string|max:20',
             'specialty_id' => 'required|exists:specialties,id',
-            'room_id' => 'required|exists:rooms,id',
+            'room_id' => 'nullable|exists:rooms,id',
+            'qualification' => 'required|string',
+            'experience' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'boolean'
         ]);
 
@@ -90,6 +99,9 @@ class DoctorController extends Controller
         $doctor->update([
             'specialty_id' => $request->specialty_id,
             'room_id' => $request->room_id,
+            'qualification' => $request->qualification,
+            'experience' => $request->experience,
+            'description' => $request->description,
             'is_active' => $request->is_active ?? true
         ]);
 
@@ -99,8 +111,13 @@ class DoctorController extends Controller
 
     public function destroy(Doctor $doctor)
     {
+        // Delete user account
+        $doctor->user->delete();
+
+        // Delete doctor profile
         $doctor->delete();
+
         return redirect()->route('admin.doctors.index')
-            ->with('success', 'Bác sĩ đã được xóa.');
+            ->with('success', 'Bác sĩ đã được xóa thành công.');
     }
-} 
+}

@@ -40,38 +40,38 @@
                 </thead>
                 <tbody>
                     @foreach($specialties as $specialty)
-                        <tr>
-                            <td>{{ $specialty->id }}</td>
-                            <td>
-                                @if($specialty->icon)
-                                    <i class="{{ $specialty->icon }} fa-2x"></i>
-                                @else
-                                    <i class="fas fa-stethoscope fa-2x text-secondary"></i>
-                                @endif
-                            </td>
-                            <td>{{ $specialty->name }}</td>
-                            <td>{{ $specialty->description }}</td>
-                            <td>{{ $specialty->doctors->count() }}</td>
-                            <td>
-                                @if($specialty->is_active)
-                                    <span class="badge badge-success">Hoạt động</span>
-                                @else
-                                    <span class="badge badge-danger">Không hoạt động</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('admin.specialties.edit', $specialty) }}" class="btn btn-sm btn-info">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.specialties.destroy', $specialty) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-sm btn-danger delete-specialty" data-id="{{ $specialty->id }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>{{ $specialty->id }}</td>
+                        <td>
+                            @if($specialty->icon)
+                                <i class="{{ $specialty->icon }} fa-2x"></i>
+                            @else
+                                <i class="fas fa-stethoscope fa-2x text-secondary"></i>
+                            @endif
+                        </td>
+                        <td>{{ $specialty->name }}</td>
+                        <td>{{ $specialty->description }}</td>
+                        <td>{{ $specialty->doctors->count() }}</td>
+                        <td>
+                            @if($specialty->is_active)
+                                <span class="badge badge-success">Hoạt động</span>
+                            @else
+                                <span class="badge badge-danger">Không hoạt động</span>
+                            @endif
+                        </td>
+                        <td>
+                            <a href="{{ route('admin.specialties.edit', $specialty) }}" class="btn btn-sm btn-info">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('admin.specialties.destroy', $specialty) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-sm btn-danger delete-specialty" data-id="{{ $specialty->id }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -142,4 +142,4 @@
             @endif
         });
     </script>
-@stop 
+@stop

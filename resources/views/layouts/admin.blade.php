@@ -1,7 +1,116 @@
-@extends('adminlte::page')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title') - Hệ thống quản lý phòng khám</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: #343a40;
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,.75);
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,.1);
+        }
+        .main-content {
+            padding: 20px;
+        }
+    </style>
+    @yield('styles')
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0 sidebar">
+                <div class="p-3">
+                    <h4>Quản trị</h4>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                           href="{{ route('admin.dashboard') }}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}"
+                           href="{{ route('admin.doctors.index') }}">
+                            <i class="bi bi-person-badge"></i> Bác sĩ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}"
+                           href="{{ route('admin.patients.index') }}">
+                            <i class="bi bi-people"></i> Bệnh nhân
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.appointments.*') ? 'active' : '' }}"
+                           href="{{ route('admin.appointments.index') }}">
+                            <i class="bi bi-calendar-check"></i> Lịch hẹn
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}"
+                           href="{{ route('admin.schedules.index') }}">
+                            <i class="bi bi-calendar-week"></i> Lịch làm việc
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.specialties.*') ? 'active' : '' }}"
+                           href="{{ route('admin.specialties.index') }}">
+                            <i class="bi bi-hospital"></i> Chuyên khoa
+                        </a>
+                    </li>
+                    <li class="nav-item">
 
-@section('title', 'Medical Appointment System')
+                  <a class="nav-link {{ request()->routeIs('admin.rooms.*') ? 'active' : '' }}"
+                           href="{{ route('admin.rooms.index') }}">
+                            <i class="bi bi-door-open"></i> Phòng khám
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}"
+                           href="{{ route('admin.posts.index') }}">
+                            <i class="bi bi-newspaper"></i> Bài viết
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                           href="{{ route('admin.categories.index') }}">
+                            <i class="bi bi-tags"></i> Danh mục
+                        </a>
+                    </li>
+                    <li class="nav-item mt-3">
+                        <form action="{{ route('admin.logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="nav-link btn btn-link text-start w-100">
+                                <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
 
+            <!-- Main content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                @yield('content')
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @section('content_header')
     <h1>Dashboard</h1>
 @stop
@@ -73,4 +182,4 @@
 
 @section('js')
     <script> console.log('Hi!'); </script>
-@stop 
+@stop

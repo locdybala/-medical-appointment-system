@@ -1,6 +1,9 @@
-@extends('layouts.admin')
+@extends('adminlte::page')
 
-@section('content')
+@section('title', 'Quản lý bác sĩ')
+
+@section('content_header')
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -104,4 +107,4 @@
         });
     });
 </script>
-@endpush 
+@endpush

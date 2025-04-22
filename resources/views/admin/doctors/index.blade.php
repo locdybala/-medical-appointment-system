@@ -37,9 +37,9 @@
                     @foreach($doctors as $doctor)
                         <tr>
                             <td>{{ $doctor->id }}</td>
-                            <td>{{ $doctor->name }}</td>
-                            <td>{{ $doctor->email }}</td>
-                            <td>{{ $doctor->phone }}</td>
+                            <td>{{ $doctor->user->name }}</td>
+                            <td>{{ $doctor->user->email }}</td>
+                            <td>{{ $doctor->user->phone }}</td>
                             <td>{{ $doctor->specialty->name ?? 'N/A' }}</td>
                             <td>{{ $doctor->room->name ?? 'N/A' }}</td>
                             <td>
@@ -123,4 +123,4 @@
             @endif
         });
     </script>
-@stop 
+@stop

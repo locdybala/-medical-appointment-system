@@ -10,20 +10,24 @@ class Doctor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'address',
+        'user_id',
         'specialty_id',
         'room_id',
+        'phone',
+        'address',
         'qualification',
         'experience',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function specialty()
     {
