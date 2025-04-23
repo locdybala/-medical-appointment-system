@@ -32,7 +32,22 @@ class AppointmentController extends Controller
     public function create(): View
     {
         $specialties = Specialty::all();
-        return view('frontend.appointments.create', compact('specialties'));
+        $doctors = Doctor::with('user', 'specialty')->where('is_active', true)->get();
+
+        return view('frontend.appointments.create', [
+            'specialties' => $specialties,
+            'doctors' => $doctors
+        ]);
+    }
+
+    public function getDoctorsBySpecialty($specialtyId)
+    {
+        $doctors = Doctor::with('user')
+            ->where('specialty_id', $specialtyId)
+            ->where('is_active', true)
+            ->get();
+
+        return response()->json($doctors);
     }
 
     /**
@@ -40,18 +55,24 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'doctor_id' => 'required|exists:doctors,id',
-            'date' => 'required|date|after:today',
-            'symptoms' => 'nullable|string',
+            'appointment_date' => 'required|date|after:today',
+            'appointment_time' => 'required',
+            'symptoms' => 'required|string',
         ]);
 
-        $validated['patient_id'] = auth()->id();
-        $validated['status'] = 'pending';
+        $appointment = Appointment::create([
+            'patient_id' => auth()->guard('patient')->id(),
+            'doctor_id' => $request->doctor_id,
+            'appointment_date' => $request->appointment_date,
+            'appointment_time' => $request->appointment_time,
+            'symptoms' => $request->symptoms,
+            'status' => 'pending',
+            'fee' => 0, // Sẽ được cập nhật bởi admin/bác sĩ
+        ]);
 
-        $appointment = Appointment::create($validated);
-
-        return redirect()->route('appointments.show', $appointment)
+        return redirect()->route('appointments.history')
             ->with('success', 'Đặt lịch khám thành công! Vui lòng chờ xác nhận từ phòng khám.');
     }
 
@@ -61,7 +82,7 @@ class AppointmentController extends Controller
     public function show(Appointment $appointment): View
     {
         $this->authorize('view', $appointment);
-        
+
         return view('frontend.appointments.show', compact('appointment'));
     }
 
@@ -71,7 +92,7 @@ class AppointmentController extends Controller
     public function edit(Appointment $appointment): View
     {
         $this->authorize('update', $appointment);
-        
+
         $specialties = Specialty::all();
         return view('frontend.appointments.edit', compact('appointment', 'specialties'));
     }

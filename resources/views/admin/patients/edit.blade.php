@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('adminlte::page')
 
 @section('title', 'Chỉnh sửa thông tin bệnh nhân')
 
@@ -159,4 +159,4 @@
             </form>
         </div>
     </div>
-@stop 
+@stop

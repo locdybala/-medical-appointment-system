@@ -41,11 +41,11 @@
                 <a href="{{ route('specialties') }}" class="nav-item nav-link {{ request()->routeIs('specialties') ? 'active' : '' }}">Chuyên khoa</a>
                 <a href="{{ route('doctors') }}" class="nav-item nav-link {{ request()->routeIs('doctors') ? 'active' : '' }}">Bác sĩ</a>
                 <a href="{{ route('contact') }}" class="nav-item nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Liên hệ</a>
-                
-                @auth
+
+                @auth('patient')
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            {{ auth()->user()->name }}
+                            {{ auth()->guard('patient')->user()->name }}
                         </a>
                         <div class="dropdown-menu fade-up m-0">
                             <a href="{{ route('appointments.history') }}" class="dropdown-item">Lịch sử đặt khám</a>
@@ -62,9 +62,9 @@
                     <a href="{{ route('register') }}" class="nav-item nav-link">Đăng ký</a>
                 @endauth
             </div>
-            @auth
+            @auth('patient')
                 <a href="{{ route('appointment.create') }}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Đặt lịch khám<i class="fa fa-arrow-right ms-3"></i></a>
-            @else  
+            @else
                 <a href="{{ route('login') }}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Đặt lịch khám<i class="fa fa-arrow-right ms-3"></i></a>
             @endauth
         </div>

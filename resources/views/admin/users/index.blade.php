@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Danh sách lịch hẹn')
+@section('title', 'Quản lý tài khoản')
 
 @section('content_header')
     <div class="d-flex justify-content-between align-items-center">
-        <h1>Danh sách lịch hẹn</h1>
-        <a href="{{ route('admin.appointments.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Thêm lịch hẹn
+        <h1>Quản lý tài khoản</h1>
+        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Thêm tài khoản
         </a>
     </div>
 @stop
@@ -19,42 +19,42 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Bệnh nhân</th>
-                            <th>Bác sĩ</th>
-                            <th>Ngày hẹn</th>
-                            <th>Giờ hẹn</th>
-                            <th>Phí khám</th>
-                            <th>Trạng thái thanh toán</th>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($appointments as $appointment)
+                        @foreach($users as $user)
                             <tr>
-                                <td>{{ $appointment->id }}</td>
-                                <td>{{ $appointment->patient->name }}</td>
-                                <td>{{ $appointment->doctor->user->name }}</td>
-                                <td>{{ $appointment->appointment_date->format('d/m/Y') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('H:i') }}</td>
-                                <td>{{ number_format($appointment->fee, 0, ',', '.') }} VNĐ</td>
+                                <td>{{ $user->id }}</td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->phone }}</td>
                                 <td>
-                                    @if($appointment->is_paid)
-                                        <span class="badge badge-success">Đã thanh toán</span>
+                                    <span class="badge badge-info">{{ ucfirst($user->role) }}</span>
+                                </td>
+                                <td>
+                                    @if($user->is_active)
+                                        <span class="badge badge-success">Hoạt động</span>
                                     @else
-                                        <span class="badge badge-danger">Chưa thanh toán</span>
+                                        <span class="badge badge-danger">Không hoạt động</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.appointments.show', $appointment->id) }}" class="btn btn-info btn-sm">
+                                    <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-info btn-sm">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.appointments.edit', $appointment->id) }}" class="btn btn-primary btn-sm">
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-primary btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('admin.appointments.destroy', $appointment->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa lịch hẹn này?')">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
@@ -65,7 +65,7 @@
                 </table>
             </div>
             <div class="mt-3">
-                {{ $appointments->links() }}
+                {{ $users->links() }}
             </div>
         </div>
     </div>
@@ -80,7 +80,7 @@
     <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#appointments-table').DataTable({
+            $('.table').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json"
                 }

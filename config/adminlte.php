@@ -300,9 +300,14 @@ return [
 
     'menu' => [
         [
-            'text' => 'Dashboard',
-            'url' => 'admin',
+            'text' => 'Trang chủ',
+            'url' => 'admin/dashboard',
             'icon' => 'fas fa-tachometer-alt',
+        ],
+        [
+            'text' => 'Quản lý Phòng khám',
+            'url' => 'admin/rooms',
+            'icon' => 'fas fa-door-open',
         ],
         [
             'text' => 'Quản lý Chuyên khoa',
@@ -313,11 +318,6 @@ return [
             'text' => 'Quản lý Bác sĩ',
             'url' => 'admin/doctors',
             'icon' => 'fas fa-user-md',
-        ],
-        [
-            'text' => 'Quản lý Phòng khám',
-            'url' => 'admin/rooms',
-            'icon' => 'fas fa-door-open',
         ],
         [
             'text' => 'Quản lý Lịch khám',
@@ -333,6 +333,11 @@ return [
             'text' => 'Quản lý Bệnh nhân',
             'url' => 'admin/patients',
             'icon' => 'fas fa-user-injured',
+        ],
+        [
+            'text' => 'Quản lý Người dùng',
+            'url' => 'admin/users',
+            'icon' => 'fas fa-users-cog',
         ],
         [
             'text' => 'Quản lý Bài viết',

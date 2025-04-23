@@ -39,7 +39,7 @@ class PatientController extends Controller
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|string|in:male,female,other',
             'address' => 'nullable|string',
-            'blood_group' => 'nullable|string',
+            'blood_type' => 'nullable|string',
             'medical_history' => 'nullable|string',
             'emergency_contact_name' => 'nullable|string',
             'emergency_contact_phone' => 'nullable|string',
@@ -55,7 +55,7 @@ class PatientController extends Controller
             'date_of_birth' => $request->date_of_birth,
             'gender' => $request->gender,
             'address' => $request->address,
-            'blood_group' => $request->blood_group,
+            'blood_type' => $request->blood_type,
             'medical_history' => $request->medical_history,
             'emergency_contact_name' => $request->emergency_contact_name,
             'emergency_contact_phone' => $request->emergency_contact_phone,
@@ -92,11 +92,12 @@ class PatientController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:patients,email,' . $patient->id,
+            'password' => 'nullable|string|min:8|confirmed',
             'phone' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|string|in:male,female,other',
             'address' => 'nullable|string',
-            'blood_group' => 'nullable|string',
+            'blood_type' => 'nullable|string',
             'medical_history' => 'nullable|string',
             'emergency_contact_name' => 'nullable|string',
             'emergency_contact_phone' => 'nullable|string',
@@ -104,20 +105,26 @@ class PatientController extends Controller
             'insurance_provider' => 'nullable|string',
         ]);
 
-        $patient->update([
+        $data = [
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'date_of_birth' => $request->date_of_birth,
             'gender' => $request->gender,
             'address' => $request->address,
-            'blood_group' => $request->blood_group,
+            'blood_type' => $request->blood_type,
             'medical_history' => $request->medical_history,
             'emergency_contact_name' => $request->emergency_contact_name,
             'emergency_contact_phone' => $request->emergency_contact_phone,
             'insurance_number' => $request->insurance_number,
             'insurance_provider' => $request->insurance_provider,
-        ]);
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $patient->update($data);
 
         return redirect()->route('admin.patients.index')
             ->with('success', 'Thông tin bệnh nhân đã được cập nhật thành công.');

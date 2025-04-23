@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('adminlte::page')
 
 @section('content')
 <div class="content-header">
@@ -25,8 +25,8 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="name">Tên danh mục <span class="text-danger">*</span></label>
-                        <input type="text" name="name" id="name" 
-                            class="form-control @error('name') is-invalid @enderror" 
+                        <input type="text" name="name" id="name"
+                            class="form-control @error('name') is-invalid @enderror"
                             value="{{ old('name', $category->name) }}" required>
                         @error('name')
                             <span class="invalid-feedback">{{ $message }}</span>
@@ -35,7 +35,7 @@
 
                     <div class="form-group">
                         <label for="description">Mô tả</label>
-                        <textarea name="description" id="description" rows="3" 
+                        <textarea name="description" id="description" rows="3"
                             class="form-control @error('description') is-invalid @enderror">{{ old('description', $category->description) }}</textarea>
                         @error('description')
                             <span class="invalid-feedback">{{ $message }}</span>
@@ -44,7 +44,7 @@
 
                     <div class="form-group">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" name="is_active" id="is_active" 
+                            <input type="checkbox" name="is_active" id="is_active"
                                 class="custom-control-input" value="1" {{ old('is_active', $category->is_active) ? 'checked' : '' }}>
                             <label class="custom-control-label" for="is_active">Hoạt động</label>
                         </div>
@@ -59,4 +59,4 @@
         </div>
     </div>
 </section>
-@endsection 
+@endsection

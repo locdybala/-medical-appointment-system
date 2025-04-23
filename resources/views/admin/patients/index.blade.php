@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('adminlte::page')
 
 @section('title', 'Quản lý bệnh nhân')
 
@@ -106,4 +106,4 @@
             });
         });
     </script>
-@stop 
+@stop

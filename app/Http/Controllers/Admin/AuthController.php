@@ -29,7 +29,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $user = Auth::user();
-            
+
             // Kiểm tra role của user
             if (!$user->isAdmin() && !$user->isDoctor()) {
                 Auth::logout();
@@ -57,7 +57,7 @@ class AuthController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect()->route('admin.login')->with('success', 'Đăng xuất thành công.');
+        dd('Đăng xuất thành công.');
+        return redirect('/admin/login')->with('success', 'Đăng xuất thành công.');
     }
-} 
+}

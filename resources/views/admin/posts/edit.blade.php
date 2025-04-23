@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('adminlte::page')
 
 @section('content')
 <div class="content-header">
@@ -25,8 +25,8 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="title">Tiêu đề <span class="text-danger">*</span></label>
-                        <input type="text" name="title" id="title" 
-                            class="form-control @error('title') is-invalid @enderror" 
+                        <input type="text" name="title" id="title"
+                            class="form-control @error('title') is-invalid @enderror"
                             value="{{ old('title', $post->title) }}" required>
                         @error('title')
                             <span class="invalid-feedback">{{ $message }}</span>
@@ -49,13 +49,13 @@
                         <label for="featured_image">Ảnh đại diện</label>
                         @if($post->featured_image)
                             <div class="mb-2">
-                                <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}" 
+                                <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
                                     style="max-width: 200px; max-height: 200px;">
                             </div>
                         @endif
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" name="featured_image" id="featured_image" 
+                                <input type="file" name="featured_image" id="featured_image"
                                     class="custom-file-input @error('featured_image') is-invalid @enderror">
                                 <label class="custom-file-label" for="featured_image">Chọn ảnh mới</label>
                             </div>
@@ -70,7 +70,7 @@
 
                     <div class="form-group">
                         <label for="content">Nội dung <span class="text-danger">*</span></label>
-                        <textarea name="content" id="content" rows="10" 
+                        <textarea name="content" id="content" rows="10"
                             class="form-control @error('content') is-invalid @enderror" required>{{ old('content', $post->content) }}</textarea>
                         @error('content')
                             <span class="invalid-feedback">{{ $message }}</span>
@@ -81,8 +81,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="meta_title">Meta Title</label>
-                                <input type="text" name="meta_title" id="meta_title" 
-                                    class="form-control @error('meta_title') is-invalid @enderror" 
+                                <input type="text" name="meta_title" id="meta_title"
+                                    class="form-control @error('meta_title') is-invalid @enderror"
                                     value="{{ old('meta_title', $post->meta_title) }}">
                                 @error('meta_title')
                                     <span class="invalid-feedback">{{ $message }}</span>
@@ -92,7 +92,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="meta_description">Meta Description</label>
-                                <textarea name="meta_description" id="meta_description" rows="2" 
+                                <textarea name="meta_description" id="meta_description" rows="2"
                                     class="form-control @error('meta_description') is-invalid @enderror">{{ old('meta_description', $post->meta_description) }}</textarea>
                                 @error('meta_description')
                                     <span class="invalid-feedback">{{ $message }}</span>
@@ -103,7 +103,7 @@
 
                     <div class="form-group">
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" name="is_published" id="is_published" 
+                            <input type="checkbox" name="is_published" id="is_published"
                                 class="custom-control-input" value="1" {{ old('is_published', $post->is_published) ? 'checked' : '' }}>
                             <label class="custom-control-label" for="is_published">Xuất bản ngay</label>
                         </div>
@@ -154,4 +154,4 @@
         });
     });
 </script>
-@endpush 
+@endpush
