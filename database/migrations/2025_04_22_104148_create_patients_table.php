@@ -12,12 +12,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone');
-            $table->text('address');
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
             $table->date('date_of_birth');
             $table->enum('gender', ['male', 'female', 'other']);
-            $table->string('blood_type')->nullable();
+            $table->string('blood_group')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->string('image')->nullable();
+            $table->integer('user_id')->unique();
             $table->timestamps();
         });
     }

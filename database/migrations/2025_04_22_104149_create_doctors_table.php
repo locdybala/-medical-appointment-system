@@ -13,11 +13,14 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('specialty_id')->constrained()->onDelete('cascade');
             $table->foreignId('room_id')->nullable()->constrained()->onDelete('set null');
-            $table->string('phone');
-            $table->text('address');
-            $table->string('qualification');
-            $table->string('experience');
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->string('qualification')->nullable();
+            $table->string('experience')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->string('image')->nullable();
+            $table->string('gender')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

@@ -30,7 +30,11 @@ class DoctorSeeder extends Seeder
                 'qualification' => 'Thạc sĩ',
                 'experience' => rand(5, 20) . ' năm',
                 'description' => 'Bác sĩ có kinh nghiệm trong lĩnh vực chuyên môn',
-                'status' => 'active'
+                'is_active' => 1,
+                'gender' => 'male',
+                'image' => 'https://via.placeholder.com/150',
+                'phone' => '012345678' . $i,
+                'address' => 'Hà Nội',
             ]);
         }
     }

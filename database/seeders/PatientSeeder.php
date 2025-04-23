@@ -27,8 +27,10 @@ class PatientSeeder extends Seeder
                 'gender' => rand(0, 1) ? 'male' : 'female',
                 'date_of_birth' => now()->subYears(rand(18, 60)),
                 'blood_group' => ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'][rand(0, 7)],
-                'medical_history' => 'Không có tiền sử bệnh đặc biệt',
-                'allergies' => 'Không có dị ứng'
+                'image' => 'https://via.placeholder.com/150',
+                'phone' => '098765432' . $i,
+                'address' => 'Hà Nội',
+                'email' => $user->email,
             ]);
         }
     }

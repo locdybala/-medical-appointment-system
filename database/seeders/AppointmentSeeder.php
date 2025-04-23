@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Schedule;
 use Illuminate\Database\Seeder;
 
 class AppointmentSeeder extends Seeder
@@ -16,15 +17,26 @@ class AppointmentSeeder extends Seeder
 
         foreach ($patients as $patient) {
             $doctor = $doctors->random();
-            Appointment::create([
-                'patient_id' => $patient->id,
-                'doctor_id' => $doctor->id,
-                'appointment_date' => now()->addDays(rand(1, 30)),
-                'appointment_time' => now()->addHours(rand(1, 12))->format('H:i'),
-                'fee' => rand(100000, 500000),
-                'is_paid' => rand(0, 1),
-                'notes' => 'Ghi chú cho lịch hẹn ' . $patient->name,
-            ]);
+            $schedule = Schedule::where('doctor_id', $doctor->id)
+                ->where('is_available', true)
+                ->inRandomOrder()
+                ->first();
+
+            if ($schedule) {
+                Appointment::create([
+                    'patient_id' => $patient->id,
+                    'doctor_id' => $doctor->id,
+                    'schedule_id' => $schedule->id,
+                    'appointment_date' => $schedule->date,
+                    'appointment_time' => $schedule->start_time,
+                    'fee' => rand(100000, 500000),
+                    'is_paid' => rand(0, 1),
+                    'notes' => 'Ghi chú cho lịch hẹn ' . $patient->name,
+                ]);
+
+                // Cập nhật trạng thái lịch
+                $schedule->update(['is_available' => false]);
+            }
         }
     }
 }
