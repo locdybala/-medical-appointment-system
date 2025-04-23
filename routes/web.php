@@ -106,3 +106,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // Default auth routes (if needed)
 require __DIR__.'/auth.php';
 
+
