@@ -2,20 +2,20 @@
 
 namespace App\Http\Middleware;
 
+use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    public function handle(Request $request, Closure $next)
+    /**
+     * Handle an incoming request.
+     */
+    public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login');
-        }
-
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('admin.login')->with('error', 'Bạn không có quyền truy cập trang quản trị.');
+        if (!auth()->check() || (!auth()->user()->isAdmin() && !auth()->user()->isDoctor())) {
+            return redirect()->route('admin.login')->with('error', 'Bạn không có quyền truy cập vào trang quản trị.');
         }
 
         return $next($request);

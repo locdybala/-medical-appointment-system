@@ -51,21 +51,21 @@
                             <a href="{{ route('appointments.history') }}" class="dropdown-item">Lịch sử đặt khám</a>
                             <a href="{{ route('profile.edit') }}" class="dropdown-item">Thông tin cá nhân</a>
                             <div class="dropdown-divider"></div>
-                            <form method="POST" action="">
+                            <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="dropdown-item">Đăng xuất</button>
                             </form>
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('patient.login') }}" class="nav-item nav-link">Đăng nhập</a>
-                    <a href="{{ route('patient.register') }}" class="nav-item nav-link">Đăng ký</a>
+                    <a href="{{ route('login') }}" class="nav-item nav-link">Đăng nhập</a>
+                    <a href="{{ route('register') }}" class="nav-item nav-link">Đăng ký</a>
                 @endauth
             </div>
             @auth
                 <a href="{{ route('appointment.create') }}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Đặt lịch khám<i class="fa fa-arrow-right ms-3"></i></a>
             @else  
-                <a href="{{ route('patient.login') }}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Đặt lịch khám<i class="fa fa-arrow-right ms-3"></i></a>
+                <a href="{{ route('login') }}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Đặt lịch khám<i class="fa fa-arrow-right ms-3"></i></a>
             @endauth
         </div>
     </nav>

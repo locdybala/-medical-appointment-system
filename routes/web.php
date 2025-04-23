@@ -21,6 +21,7 @@ use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\AppointmentHistoryController;
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\AboutController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,20 +55,18 @@ Route::get('/doctors', [FrontendDoctorController::class, 'index'])->name('doctor
 Route::get('/specialties', [FrontendSpecialtyController::class, 'index'])->name('specialties');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
-Route::get('/appointments/history', [AppointmentHistoryController::class, 'index'])
-    ->name('appointments.history');
 
-// Patient authentication routes
+// Frontend Authentication Routes
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('patient.login');
-    Route::post('/login', [AuthController::class, 'login'])->name('patient.login.submit');
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('patient.register');
-    Route::post('/register', [AuthController::class, 'register'])->name('patient.register.submit');
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
-// Protected patient routes
+// Protected Frontend Routes
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('patient.logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -82,13 +81,14 @@ Route::middleware('auth')->group(function () {
 Route::prefix('admin')->name('admin.')->group(function () {
     // Guest admin routes
     Route::middleware('guest')->group(function () {
-        Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-        Route::post('login', [AuthenticatedSessionController::class, 'store']);
+        Route::get('login', [\App\Http\Controllers\Admin\AuthController::class, 'showLoginForm'])->name('login');
+        Route::post('login', [\App\Http\Controllers\Admin\AuthController::class, 'login']);
     });
 
-    // Protected admin routes
+    // Protected admin routes - cho phép cả admin và bác sĩ truy cập
+    Route::middleware(['auth', 'role:admin,doctor'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+        Route::post('logout', [\App\Http\Controllers\Admin\AuthController::class, 'logout'])->name('logout');
 
         // Resource routes
         Route::resource('users', UserController::class);
@@ -100,7 +100,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('rooms', RoomController::class);
         Route::resource('posts', PostController::class);
         Route::resource('categories', CategoryController::class);
+    });
 });
 
 // Default auth routes (if needed)
 require __DIR__.'/auth.php';
+

@@ -3,67 +3,96 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Role;
-use App\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleSeeder extends Seeder
 {
     public function run()
     {
-        // Create roles
-        $admin = Role::create([
-            'name' => 'Administrator',
-            'slug' => 'admin',
-            'description' => 'Quản trị viên hệ thống'
-        ]);
-
-        $doctor = Role::create([
-            'name' => 'Doctor',
-            'slug' => 'doctor',
-            'description' => 'Bác sĩ'
-        ]);
-
-        $staff = Role::create([
-            'name' => 'Staff',
-            'slug' => 'staff',
-            'description' => 'Nhân viên'
-        ]);
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Create permissions
         $permissions = [
-            'manage_doctors' => 'Quản lý bác sĩ',
-            'manage_patients' => 'Quản lý bệnh nhân',
-            'manage_appointments' => 'Quản lý lịch hẹn',
-            'manage_schedules' => 'Quản lý lịch khám',
-            'manage_rooms' => 'Quản lý phòng khám',
-            'manage_specialties' => 'Quản lý chuyên khoa',
-            'manage_posts' => 'Quản lý bài viết',
-            'manage_categories' => 'Quản lý danh mục',
-            'view_appointments' => 'Xem lịch hẹn',
-            'manage_own_schedule' => 'Quản lý lịch cá nhân'
+            // User permissions
+            'view users',
+            'create users',
+            'edit users',
+            'delete users',
+            
+            // Doctor permissions
+            'view doctors',
+            'create doctors',
+            'edit doctors',
+            'delete doctors',
+            
+            // Patient permissions
+            'view patients',
+            'create patients',
+            'edit patients',
+            'delete patients',
+            
+            // Appointment permissions
+            'view appointments',
+            'create appointments',
+            'edit appointments',
+            'delete appointments',
+            
+            // Specialty permissions
+            'view specialties',
+            'create specialties',
+            'edit specialties',
+            'delete specialties',
+            
+            // Schedule permissions
+            'view schedules',
+            'create schedules',
+            'edit schedules',
+            'delete schedules',
+            
+            // Room permissions
+            'view rooms',
+            'create rooms',
+            'edit rooms',
+            'delete rooms',
+            
+            // Post permissions
+            'view posts',
+            'create posts',
+            'edit posts',
+            'delete posts',
+            
+            // Category permissions
+            'view categories',
+            'create categories',
+            'edit categories',
+            'delete categories',
         ];
 
-        foreach ($permissions as $slug => $name) {
-            Permission::create([
-                'name' => $name,
-                'slug' => $slug
-            ]);
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
         }
 
-        // Assign all permissions to admin
-        $admin->permissions()->attach(Permission::all());
+        // Create roles and assign permissions
+        $admin = Role::create(['name' => 'admin']);
+        $admin->givePermissionTo(Permission::all());
 
-        // Assign permissions to doctor
-        $doctor->permissions()->attach(Permission::whereIn('slug', [
-            'view_appointments',
-            'manage_own_schedule'
-        ])->get());
+        $doctor = Role::create(['name' => 'doctor']);
+        $doctor->givePermissionTo([
+            'view appointments',
+            'edit appointments',
+            'view schedules',
+            'edit schedules',
+            'view patients',
+        ]);
 
-        // Assign permissions to staff
-        $staff->permissions()->attach(Permission::whereIn('slug', [
-            'manage_patients',
-            'manage_appointments',
-            'view_appointments'
-        ])->get());
+        $patient = Role::create(['name' => 'patient']);
+        $patient->givePermissionTo([
+            'view appointments',
+            'create appointments',
+            'edit appointments',
+            'delete appointments',
+        ]);
     }
 } 
