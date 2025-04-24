@@ -28,6 +28,7 @@
                         <th>Email</th>
                         <th>Điện thoại</th>
                         <th>Chuyên khoa</th>
+                        <th>Phí khám</th>
                         <th>Phòng khám</th>
                         <th>Trạng thái</th>
                         <th>Thao tác</th>
@@ -41,6 +42,7 @@
                             <td>{{ $doctor->user->email }}</td>
                             <td>{{ $doctor->user->phone }}</td>
                             <td>{{ $doctor->specialty->name ?? 'N/A' }}</td>
+                            <td>{{ number_format($doctor->consultation_fee, 0, ',', '.') }} VNĐ</td>
                             <td>{{ $doctor->room->name ?? 'N/A' }}</td>
                             <td>
                                 @if($doctor->is_active)

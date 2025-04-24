@@ -35,6 +35,7 @@ class DoctorSeeder extends Seeder
                 'image' => 'https://via.placeholder.com/150',
                 'phone' => '012345678' . $i,
                 'address' => 'Hà Nội',
+                'consultation_fee' => rand(200000, 500000),
             ]);
         }
     }

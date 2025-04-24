@@ -37,6 +37,7 @@ class DoctorController extends Controller
             'qualification' => 'required|string',
             'experience' => 'required|string',
             'description' => 'nullable|string',
+            'consultation_fee' => 'required|numeric|min:0',
             'is_active' => 'boolean'
         ]);
 
@@ -60,6 +61,7 @@ class DoctorController extends Controller
             'qualification' => $request->qualification,
             'experience' => $request->experience,
             'description' => $request->description,
+            'consultation_fee' => $request->consultation_fee,
             'is_active' => $request->is_active ?? true
         ]);
 
@@ -85,6 +87,7 @@ class DoctorController extends Controller
             'qualification' => 'required|string',
             'experience' => 'required|string',
             'description' => 'nullable|string',
+            'consultation_fee' => 'required|numeric|min:0',
             'is_active' => 'boolean'
         ]);
 
@@ -102,6 +105,7 @@ class DoctorController extends Controller
             'qualification' => $request->qualification,
             'experience' => $request->experience,
             'description' => $request->description,
+            'consultation_fee' => $request->consultation_fee,
             'is_active' => $request->is_active ?? true
         ]);
 
