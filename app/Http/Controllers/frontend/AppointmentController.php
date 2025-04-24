@@ -19,7 +19,7 @@ class AppointmentController extends Controller
      */
     public function index(): View
     {
-        $appointments = auth()->user()
+        $appointments = auth('patient')->user()
             ->appointments()
             ->with(['doctor.specialty'])
             ->latest()
@@ -31,10 +31,19 @@ class AppointmentController extends Controller
     /**
      * Show the form for creating a new appointment.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
         $specialties = Specialty::where('is_active', true)->get();
-        return view('frontend.appointments.create', compact('specialties'));
+        $doctor = null;
+
+        if ($request->has('doctor')) {
+            $doctor = Doctor::with('specialty', 'user')
+                ->where('id', $request->doctor)
+                ->where('is_active', true)
+                ->first();
+        }
+
+        return view('frontend.appointments.create', compact('specialties', 'doctor'));
     }
 
     public function getDoctorsBySpecialty(Specialty $specialty)
@@ -56,28 +65,33 @@ class AppointmentController extends Controller
         return response()->json($doctors);
     }
 
-    public function getAvailableSlots(Request $request)
+    public function getAvailableSlots(Request $request, Doctor $doctor)
     {
         try {
             $request->validate([
-                'doctor_id' => 'required|exists:doctors,id',
                 'date' => 'required|date'
             ]);
 
-            $doctor = Doctor::findOrFail($request->doctor_id);
             $date = Carbon::parse($request->date);
+
+            // Kiểm tra ngày có hợp lệ không (không phải ngày quá khứ)
+            if ($date->lt(Carbon::today())) {
+                return response()->json([
+                    'error' => 'Không thể đặt lịch cho ngày trong quá khứ'
+                ], 400);
+            }
 
             // Giờ làm việc cố định: 8h - 17h
             $startTime = Carbon::parse('08:00:00');
             $endTime = Carbon::parse('17:00:00');
 
-            // Tạo danh sách các slot 30 phút
+            // Tạo danh sách các slot 1 tiếng
             $slots = [];
             $currentTime = $startTime->copy();
 
             while ($currentTime->lt($endTime)) {
-                $slotEnd = $currentTime->copy()->addMinutes(30);
-                
+                $slotEnd = $currentTime->copy()->addHour();
+
                 // Kiểm tra xem slot này có bị trùng không
                 $isBooked = Appointment::where('doctor_id', $doctor->id)
                     ->whereDate('appointment_date', $date)
@@ -87,27 +101,24 @@ class AppointmentController extends Controller
                     ->exists();
 
                 if (!$isBooked) {
-                    $slots[] = [
-                        'time' => $currentTime->format('H:i:s'),
-                        'display' => $currentTime->format('H:i') . ' - ' . $slotEnd->format('H:i')
-                    ];
+                    $slots[] = $currentTime->format('H:i');
                 }
 
-                $currentTime->addMinutes(30);
+                $currentTime->addHour();
             }
 
-            return response()->json([
-                'success' => true,
-                'slots' => $slots
-            ]);
+            return response()->json($slots);
 
-        } catch (\Exception $e) {
-            \Log::error('Error getting available slots: ' . $e->getMessage());
-            \Log::error($e->getTraceAsString());
-            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation error in getAvailableSlots: ' . json_encode($e->errors()));
             return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
+                'error' => 'Dữ liệu không hợp lệ: ' . implode(', ', array_flatten($e->errors()))
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Error in getAvailableSlots: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'error' => 'Có lỗi xảy ra khi lấy danh sách giờ khám: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -161,7 +172,7 @@ class AppointmentController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error creating appointment: ' . $e->getMessage());
             \Log::error($e->getTraceAsString());
-            
+
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
@@ -172,7 +183,6 @@ class AppointmentController extends Controller
     public function show(Appointment $appointment): View
     {
         $this->authorize('view', $appointment);
-
         return view('frontend.appointments.show', compact('appointment'));
     }
 
@@ -213,9 +223,25 @@ class AppointmentController extends Controller
     {
         $this->authorize('delete', $appointment);
 
-        $appointment->delete();
+        try {
+            $appointment->delete();
+            return redirect()->route('appointments.index')
+                ->with('success', 'Đã hủy lịch hẹn thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra khi hủy lịch hẹn');
+        }
+    }
 
-        return redirect()->route('appointments.index')
-            ->with('success', 'Hủy lịch khám thành công!');
+    public function history(): View
+    {
+        $appointments = auth('patient')->user()
+            ->appointments()
+            ->with(['doctor.specialty'])
+            ->where('status', 'completed')
+            ->latest()
+            ->paginate(10);
+
+        return view('frontend.appointments.history', compact('appointments'));
     }
 }

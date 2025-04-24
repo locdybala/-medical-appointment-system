@@ -57,15 +57,20 @@ Route::get('/specialty/{id}', [FrontendSpecialtyController::class, 'show'])->nam
 Route::get('/doctors/{id}', [FrontendDoctorController::class, 'show'])->name('doctors.show');
 
 // Appointment Routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/appointments/create', [FrontendAppointmentController::class, 'create'])->name('appointments.create');
-    Route::post('/appointments', [FrontendAppointmentController::class, 'store'])->name('appointments.store');
+Route::middleware(['auth:patient'])->group(function () {
     Route::get('/appointments', [FrontendAppointmentController::class, 'index'])->name('appointments.index');
+    Route::get('/appointments/create', [FrontendAppointmentController::class, 'create'])->name('appointments.create');
+    Route::get('/appointments/history', [AppointmentHistoryController::class, 'index'])->name('appointments.history');
+    Route::post('/appointments', [FrontendAppointmentController::class, 'store'])->name('appointments.store');
+    Route::get('/appointments/{appointment}', [FrontendAppointmentController::class, 'show'])->name('appointments.show');
+    Route::delete('/appointments/{appointment}', [FrontendAppointmentController::class, 'destroy'])->name('appointments.destroy');
 });
 
 // AJAX routes
-Route::get('/specialties/{specialty}/doctors', [FrontendAppointmentController::class, 'getDoctorsBySpecialty'])->name('specialties.doctors');
-Route::get('/appointments/available-slots', [FrontendAppointmentController::class, 'getAvailableSlots'])->name('appointments.available-slots');
+Route::middleware(['auth:patient'])->group(function () {
+    Route::get('/specialties/{specialty}/doctors', [FrontendAppointmentController::class, 'getDoctorsBySpecialty'])->name('specialties.doctors');
+    Route::get('/doctors/{doctor}/available-slots', [FrontendAppointmentController::class, 'getAvailableSlots'])->name('doctors.available-slots');
+});
 
 // Patient Auth Routes
 Route::middleware('guest:patient')->group(function () {
@@ -84,7 +89,6 @@ Route::middleware('auth:patient')->group(function () {
     // Appointment routes
     Route::get('/appointment', [FrontendAppointmentController::class, 'create'])->name('appointment.create');
     Route::post('/appointment', [FrontendAppointmentController::class, 'store'])->name('appointment.store');
-    Route::get('/appointments/history', [AppointmentHistoryController::class, 'index'])->name('appointments.history');
 });
 
 /*

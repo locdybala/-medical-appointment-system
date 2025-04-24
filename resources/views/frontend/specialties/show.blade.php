@@ -32,7 +32,9 @@
                     <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
                         <div class="member" data-aos="fade-up" data-aos-delay="100">
                             <div class="member-img">
-                                <img src="{{ $doctor->image ?? asset('frontend/assets/img/doctors/doctor-1.jpg') }}" class="img-fluid" alt="">
+                                <div class="overflow-hidden">
+                                    <img class="img-fluid" src="{{ $doctor->avatar ? asset($doctor->avatar) : asset('frontend/img/team-1.jpg') }}" alt="{{ $doctor->name }}">
+                                </div>
                                 <div class="social">
                                     <a href="#"><i class="bi bi-twitter"></i></a>
                                     <a href="#"><i class="bi bi-facebook"></i></a>
@@ -60,4 +62,4 @@
         </div>
     </div>
 </section>
-@endsection 
+@endsection
