@@ -59,7 +59,7 @@
                         <h4>Thông tin đặt lịch</h4>
                         <ul>
                             <li><i class="bi bi-clock"></i> <strong>Giờ làm việc:</strong> 8:00 - 17:00 (Thứ 2 - Thứ 6)</li>
-                            <li><i class="bi bi-cash"></i> <strong>Phí khám:</strong> {{ number_format($doctor->fee, 0, ',', '.') }} VNĐ</li>
+                            <li><i class="bi bi-cash"></i> <strong>Phí khám:</strong> {{ $doctor->consultation_fee > 0 ? number_format($doctor->consultation_fee, 0, ',', '.') . ' VNĐ' : 'Thanh toán sau' }}</li>
                             <li><i class="bi bi-info-circle"></i> <strong>Lưu ý:</strong> Vui lòng đặt lịch trước ít nhất 24 giờ</li>
                         </ul>
                     </div>

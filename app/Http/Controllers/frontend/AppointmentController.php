@@ -51,75 +51,114 @@ class AppointmentController extends Controller
         $doctors = $specialty->doctors()
             ->with(['user', 'specialty'])
             ->where('is_active', true)
-            ->get()
-            ->map(function ($doctor) {
-                return [
-                    'id' => $doctor->id,
-                    'name' => $doctor->user->name,
-                    'specialty' => $doctor->specialty->name,
-                    'experience' => $doctor->experience,
-                    'consultation_fee' => $doctor->consultation_fee,
-                ];
-            });
+            ->get();
 
-        return response()->json($doctors);
+        $formattedDoctors = $doctors->map(function ($doctor) {
+            return [
+                'id' => $doctor->id,
+                'user' => [
+                    'name' => $doctor->user->name
+                ],
+                'specialty' => [
+                    'name' => $doctor->specialty->name
+                ],
+                'experience' => $doctor->experience,
+                'consultation_fee' => $doctor->consultation_fee
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $formattedDoctors
+        ]);
     }
 
     public function getAvailableSlots(Request $request, Doctor $doctor)
     {
         try {
-            $request->validate([
-                'date' => 'required|date'
-            ]);
-
             $date = Carbon::parse($request->date);
 
-            // Kiểm tra ngày có hợp lệ không (không phải ngày quá khứ)
-            if ($date->lt(Carbon::today())) {
+            // Kiểm tra ngày trong quá khứ
+            if ($date->isPast()) {
                 return response()->json([
-                    'error' => 'Không thể đặt lịch cho ngày trong quá khứ'
-                ], 400);
+                    'success' => false,
+                    'message' => 'Không thể đặt lịch cho ngày trong quá khứ'
+                ]);
             }
 
-            // Giờ làm việc cố định: 8h - 17h
-            $startTime = Carbon::parse('08:00:00');
-            $endTime = Carbon::parse('17:00:00');
+            // Giờ làm việc mặc định: 8h - 17h
+            $startTime = '08:00';
+            $endTime = '17:00';
+            $duration = 60; // 1 tiếng
 
-            // Tạo danh sách các slot 1 tiếng
-            $slots = [];
-            $currentTime = $startTime->copy();
+            // Tạo các slot thời gian từ giờ bắt đầu đến giờ kết thúc
+            $slots = $this->generateTimeSlots($startTime, $endTime, $duration);
 
-            while ($currentTime->lt($endTime)) {
-                $slotEnd = $currentTime->copy()->addHour();
-
-                // Kiểm tra xem slot này có bị trùng không
-                $isBooked = Appointment::where('doctor_id', $doctor->id)
-                    ->whereDate('appointment_date', $date)
-                    ->whereTime('appointment_time', '>=', $currentTime->format('H:i:s'))
-                    ->whereTime('appointment_time', '<', $slotEnd->format('H:i:s'))
-                    ->whereIn('status', ['pending', 'confirmed'])
-                    ->exists();
-
-                if (!$isBooked) {
-                    $slots[] = $currentTime->format('H:i');
-                }
-
-                $currentTime->addHour();
+            if (empty($slots)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không có giờ khám nào được cấu hình'
+                ]);
             }
 
-            return response()->json($slots);
+            // Lấy danh sách các slot đã được đặt
+            $bookedAppointments = Appointment::where('doctor_id', $doctor->id)
+                ->whereDate('appointment_date', $date)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->pluck('appointment_time')
+                ->map(function($time) {
+                    return Carbon::parse($time)->format('H:i');
+                })
+                ->toArray();
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Validation error in getAvailableSlots: ' . json_encode($e->errors()));
+            // Lọc bỏ các slot đã được đặt
+            $availableSlots = array_values(array_diff($slots, $bookedAppointments));
+
+            // Nếu đã qua giờ hiện tại, loại bỏ các slot đã qua
+            if ($date->isToday()) {
+                $now = Carbon::now();
+                $availableSlots = array_filter($availableSlots, function($slot) use ($now) {
+                    return Carbon::parse($slot)->gt($now);
+                });
+            }
+
+            if (empty($availableSlots)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không còn giờ khám nào trong ngày này'
+                ]);
+            }
+
             return response()->json([
-                'error' => 'Dữ liệu không hợp lệ: ' . implode(', ', array_flatten($e->errors()))
-            ], 422);
+                'success' => true,
+                'data' => array_values($availableSlots)
+            ]);
+
         } catch (\Exception $e) {
             \Log::error('Error in getAvailableSlots: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
             return response()->json([
-                'error' => 'Có lỗi xảy ra khi lấy danh sách giờ khám: ' . $e->getMessage()
-            ], 500);
+                'success' => false,
+                'message' => 'Không thể lấy danh sách giờ khám'
+            ]);
+        }
+    }
+
+    private function generateTimeSlots($startTime, $endTime, $duration)
+    {
+        try {
+            $slots = [];
+            $start = Carbon::parse($startTime);
+            $end = Carbon::parse($endTime);
+
+            while ($start < $end) {
+                $slots[] = $start->format('H:i');
+                $start->addMinutes($duration);
+            }
+
+            return $slots;
+        } catch (\Exception $e) {
+            \Log::error('Error generating time slots: ' . $e->getMessage());
+            return [];
         }
     }
 

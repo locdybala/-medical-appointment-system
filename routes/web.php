@@ -66,11 +66,9 @@ Route::middleware(['auth:patient'])->group(function () {
     Route::delete('/appointments/{appointment}', [FrontendAppointmentController::class, 'destroy'])->name('appointments.destroy');
 });
 
-// AJAX routes
-Route::middleware(['auth:patient'])->group(function () {
-    Route::get('/specialties/{specialty}/doctors', [FrontendAppointmentController::class, 'getDoctorsBySpecialty'])->name('specialties.doctors');
-    Route::get('/doctors/{doctor}/available-slots', [FrontendAppointmentController::class, 'getAvailableSlots'])->name('doctors.available-slots');
-});
+// AJAX routes for appointments
+Route::get('/frontend/specialties/{specialty}/doctors', [FrontendAppointmentController::class, 'getDoctorsBySpecialty'])->name('frontend.specialties.doctors');
+Route::get('/frontend/doctors/{doctor}/available-slots', [FrontendAppointmentController::class, 'getAvailableSlots'])->name('frontend.doctors.available-slots');
 
 // Patient Auth Routes
 Route::middleware('guest:patient')->group(function () {
@@ -117,6 +115,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('schedules', ScheduleController::class);
         Route::resource('posts', PostController::class);
         Route::resource('categories', CategoryController::class);
+        Route::resource('rooms', \App\Http\Controllers\Admin\RoomController::class);
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     });
 });
 
