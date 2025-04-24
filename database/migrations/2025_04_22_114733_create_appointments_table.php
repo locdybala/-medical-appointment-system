@@ -12,10 +12,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('doctor_id')->constrained('doctors')->onDelete('cascade');
-            $table->foreignId('schedule_id')->constrained('schedules')->onDelete('cascade');
             $table->date('appointment_date');
             $table->time('appointment_time');
             $table->enum('status', ['pending', 'approved', 'rejected', 'completed', 'cancelled', 'no_show'])->default('pending');
+            $table->text('symptoms')->nullable();
             $table->text('reason')->nullable();
             $table->text('notes')->nullable();
             $table->text('prescription')->nullable();

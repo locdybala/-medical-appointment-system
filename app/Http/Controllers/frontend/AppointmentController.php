@@ -9,6 +9,8 @@ use App\Models\Schedule;
 use App\Models\Specialty;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AppointmentController extends Controller
 {
@@ -31,23 +33,83 @@ class AppointmentController extends Controller
      */
     public function create(): View
     {
-        $specialties = Specialty::all();
-        $doctors = Doctor::with('user', 'specialty')->where('is_active', true)->get();
-
-        return view('frontend.appointments.create', [
-            'specialties' => $specialties,
-            'doctors' => $doctors
-        ]);
+        $specialties = Specialty::where('is_active', true)->get();
+        return view('frontend.appointments.create', compact('specialties'));
     }
 
-    public function getDoctorsBySpecialty($specialtyId)
+    public function getDoctorsBySpecialty(Specialty $specialty)
     {
-        $doctors = Doctor::with('user')
-            ->where('specialty_id', $specialtyId)
+        $doctors = $specialty->doctors()
+            ->with(['user', 'specialty'])
             ->where('is_active', true)
-            ->get();
+            ->get()
+            ->map(function ($doctor) {
+                return [
+                    'id' => $doctor->id,
+                    'name' => $doctor->user->name,
+                    'specialty' => $doctor->specialty->name,
+                    'experience' => $doctor->experience,
+                    'consultation_fee' => $doctor->consultation_fee,
+                ];
+            });
 
         return response()->json($doctors);
+    }
+
+    public function getAvailableSlots(Request $request)
+    {
+        try {
+            $request->validate([
+                'doctor_id' => 'required|exists:doctors,id',
+                'date' => 'required|date'
+            ]);
+
+            $doctor = Doctor::findOrFail($request->doctor_id);
+            $date = Carbon::parse($request->date);
+
+            // Giờ làm việc cố định: 8h - 17h
+            $startTime = Carbon::parse('08:00:00');
+            $endTime = Carbon::parse('17:00:00');
+
+            // Tạo danh sách các slot 30 phút
+            $slots = [];
+            $currentTime = $startTime->copy();
+
+            while ($currentTime->lt($endTime)) {
+                $slotEnd = $currentTime->copy()->addMinutes(30);
+                
+                // Kiểm tra xem slot này có bị trùng không
+                $isBooked = Appointment::where('doctor_id', $doctor->id)
+                    ->whereDate('appointment_date', $date)
+                    ->whereTime('appointment_time', '>=', $currentTime->format('H:i:s'))
+                    ->whereTime('appointment_time', '<', $slotEnd->format('H:i:s'))
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->exists();
+
+                if (!$isBooked) {
+                    $slots[] = [
+                        'time' => $currentTime->format('H:i:s'),
+                        'display' => $currentTime->format('H:i') . ' - ' . $slotEnd->format('H:i')
+                    ];
+                }
+
+                $currentTime->addMinutes(30);
+            }
+
+            return response()->json([
+                'success' => true,
+                'slots' => $slots
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error getting available slots: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -55,25 +117,53 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'doctor_id' => 'required|exists:doctors,id',
-            'appointment_date' => 'required|date|after:today',
-            'appointment_time' => 'required',
-            'symptoms' => 'required|string',
-        ]);
+        try {
+            $validated = $request->validate([
+                'doctor_id' => 'required|exists:doctors,id',
+                'appointment_date' => 'required|date|after_or_equal:today',
+                'appointment_time' => 'required',
+                'symptoms' => 'required|string|max:500',
+            ]);
 
-        $appointment = Appointment::create([
-            'patient_id' => auth()->guard('patient')->id(),
-            'doctor_id' => $request->doctor_id,
-            'appointment_date' => $request->appointment_date,
-            'appointment_time' => $request->appointment_time,
-            'symptoms' => $request->symptoms,
-            'status' => 'pending',
-            'fee' => 0, // Sẽ được cập nhật bởi admin/bác sĩ
-        ]);
+            $date = Carbon::parse($validated['appointment_date']);
+            $doctor = Doctor::findOrFail($validated['doctor_id']);
 
-        return redirect()->route('appointments.history')
-            ->with('success', 'Đặt lịch khám thành công! Vui lòng chờ xác nhận từ phòng khám.');
+            // Kiểm tra xem slot giờ có trống không
+            $existingAppointment = Appointment::where('doctor_id', $validated['doctor_id'])
+                ->whereDate('appointment_date', $date)
+                ->whereTime('appointment_time', $validated['appointment_time'])
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->first();
+
+            if ($existingAppointment) {
+                return back()->withErrors(['appointment_time' => 'Giờ này đã được đặt']);
+            }
+
+            // Tạo lịch hẹn mới
+            $appointment = Appointment::create([
+                'patient_id' => auth()->id(),
+                'doctor_id' => $validated['doctor_id'],
+                'appointment_date' => $validated['appointment_date'],
+                'appointment_time' => $validated['appointment_time'],
+                'symptoms' => $validated['symptoms'],
+                'status' => 'pending',
+                'fee' => $doctor->consultation_fee ?? 0,
+                'is_paid' => false,
+                'reason' => null,
+                'notes' => null,
+                'prescription' => null,
+                'diagnosis' => null
+            ]);
+
+            return redirect()->route('appointments.index')
+                ->with('success', 'Đặt lịch hẹn thành công! Vui lòng chờ xác nhận từ bác sĩ.');
+
+        } catch (\Exception $e) {
+            \Log::error('Error creating appointment: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     /**

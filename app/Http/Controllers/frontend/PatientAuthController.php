@@ -26,7 +26,7 @@ class PatientAuthController extends Controller
 
         if ($patient && Hash::check($credentials['password'], $patient->password)) {
             Auth::guard('patient')->login($patient);
-            return redirect()->intended(route('patient.dashboard'));
+            return redirect()->intended(route('home'))->with('success', 'Đăng nhập thành công!');
         }
 
         return back()->withErrors([

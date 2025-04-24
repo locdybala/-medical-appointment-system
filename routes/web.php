@@ -28,11 +28,7 @@ use App\Http\Controllers\Frontend\PatientAuthController;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
 |
-*/
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -57,6 +53,19 @@ Route::get('/doctors', [FrontendDoctorController::class, 'index'])->name('doctor
 Route::get('/specialties', [FrontendSpecialtyController::class, 'index'])->name('specialties');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/specialty/{id}', [FrontendSpecialtyController::class, 'show'])->name('specialties.show');
+Route::get('/doctors/{id}', [FrontendDoctorController::class, 'show'])->name('doctors.show');
+
+// Appointment Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/appointments/create', [FrontendAppointmentController::class, 'create'])->name('appointments.create');
+    Route::post('/appointments', [FrontendAppointmentController::class, 'store'])->name('appointments.store');
+    Route::get('/appointments', [FrontendAppointmentController::class, 'index'])->name('appointments.index');
+});
+
+// AJAX routes
+Route::get('/specialties/{specialty}/doctors', [FrontendAppointmentController::class, 'getDoctorsBySpecialty'])->name('specialties.doctors');
+Route::get('/appointments/available-slots', [FrontendAppointmentController::class, 'getAvailableSlots'])->name('appointments.available-slots');
 
 // Patient Auth Routes
 Route::middleware('guest:patient')->group(function () {

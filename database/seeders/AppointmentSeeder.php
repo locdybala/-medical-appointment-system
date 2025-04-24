@@ -17,26 +17,23 @@ class AppointmentSeeder extends Seeder
 
         foreach ($patients as $patient) {
             $doctor = $doctors->random();
-            $schedule = Schedule::where('doctor_id', $doctor->id)
-                ->where('is_available', true)
-                ->inRandomOrder()
-                ->first();
+            $date = now()->addDays(rand(1, 30));
 
-            if ($schedule) {
-                Appointment::create([
-                    'patient_id' => $patient->id,
-                    'doctor_id' => $doctor->id,
-                    'schedule_id' => $schedule->id,
-                    'appointment_date' => $schedule->date,
-                    'appointment_time' => $schedule->start_time,
-                    'fee' => rand(100000, 500000),
-                    'is_paid' => rand(0, 1),
-                    'notes' => 'Ghi chú cho lịch hẹn ' . $patient->name,
-                ]);
-
-                // Cập nhật trạng thái lịch
-                $schedule->update(['is_available' => false]);
-            }
+            // Tạo lịch hẹn
+            Appointment::create([
+                'patient_id' => $patient->id,
+                'doctor_id' => $doctor->id,
+                'appointment_date' => $date->format('Y-m-d'),
+                'appointment_time' => '08:00:00',
+                'status' => ['pending', 'approved', 'completed'][rand(0, 2)],
+                'symptoms' => 'Triệu chứng của bệnh nhân ' . $patient->name,
+                'fee' => rand(100000, 500000),
+                'is_paid' => rand(0, 1),
+                'reason' => null,
+                'notes' => 'Ghi chú cho lịch hẹn ' . $patient->name,
+                'prescription' => null,
+                'diagnosis' => null
+            ]);
         }
     }
 }

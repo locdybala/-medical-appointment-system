@@ -26,7 +26,7 @@
 
             <div class="col-lg-9">
                 <div class="row">
-                    @foreach($doctors as $doctor)
+                    @forelse($doctors as $doctor)
                     <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
                         <div class="member" data-aos="fade-up" data-aos-delay="100">
                             <div class="member-img">
@@ -39,14 +39,20 @@
                                 </div>
                             </div>
                             <div class="member-info">
-                                <h4>{{ $doctor->name }}</h4>
-                                <span>{{ $doctor->specialty->name }}</span>
-                                <p>{{ Str::limit($doctor->description, 100) }}</p>
+                                <h4>{{ $doctor->user->name ?? 'Chưa có tên' }}</h4>
+                                <span>{{ $doctor->specialty->name ?? 'Chưa có chuyên khoa' }}</span>
+                                <p>{{ $doctor->qualification ?? 'Chưa có thông tin' }}</p>
                                 <a href="{{ route('doctors.show', $doctor) }}" class="btn btn-primary">Xem chi tiết</a>
                             </div>
                         </div>
                     </div>
-                    @endforeach
+                    @empty
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            Không tìm thấy bác sĩ nào.
+                        </div>
+                    </div>
+                    @endforelse
                 </div>
 
                 <div class="pagination justify-content-center mt-4">
