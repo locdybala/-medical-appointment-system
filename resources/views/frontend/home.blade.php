@@ -191,69 +191,6 @@
 </div>
 <!-- Team End -->
 
-<!-- Appointment Start -->
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="row g-5">
-            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
-                <p class="d-inline-block border rounded-pill py-1 px-4">Đặt lịch khám</p>
-                <h1 class="mb-4">Đặt lịch khám trực tuyến</h1>
-                <p class="mb-4">Dễ dàng đặt lịch khám với bác sĩ chuyên môn chỉ với vài bước đơn giản.</p>
-                <div class="bg-light rounded d-flex align-items-center p-5 mb-4">
-                    <div class="d-flex flex-shrink-0 align-items-center justify-content-center rounded-circle bg-white" style="width: 55px; height: 55px;">
-                        <i class="fa fa-phone-alt text-primary"></i>
-                    </div>
-                    <div class="ms-4">
-                        <p class="mb-2">Gọi để được tư vấn</p>
-                        <h5 class="mb-0">+012 345 6789</h5>
-                    </div>
-                </div>
-                <div class="bg-light rounded d-flex align-items-center p-5">
-                    <div class="d-flex flex-shrink-0 align-items-center justify-content-center rounded-circle bg-white" style="width: 55px; height: 55px;">
-                        <i class="fa fa-envelope-open text-primary"></i>
-                    </div>
-                    <div class="ms-4">
-                        <p class="mb-2">Gửi email cho chúng tôi</p>
-                        <h5 class="mb-0">info@example.com</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
-                <div class="bg-light rounded h-100 d-flex align-items-center p-5">
-                    <form action="{{ route('appointments.store') }}" method="POST">
-                        @csrf
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <select class="form-select" name="specialty_id" required>
-                                    <option value="">Chọn chuyên khoa</option>
-                                    @foreach($specialties as $specialty)
-                                        <option value="{{ $specialty->id }}">{{ $specialty->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <select class="form-select" name="doctor_id" required>
-                                    <option value="">Chọn bác sĩ</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <input type="date" class="form-control" name="date" min="{{ date('Y-m-d') }}" required>
-                            </div>
-                            <div class="col-12">
-                                <textarea class="form-control" rows="5" name="symptoms" placeholder="Triệu chứng"></textarea>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary w-100 py-3" type="submit">Đặt lịch khám</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Appointment End -->
-
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -278,4 +215,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
-@endsection 
+@endsection

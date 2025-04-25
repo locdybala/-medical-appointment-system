@@ -60,7 +60,7 @@
                                 <form action="{{ route('admin.rooms.destroy', $room) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" class="btn btn-sm btn-danger delete-room" data-id="{{ $room->id }}">
+                                    <button type="submit" class="btn btn-sm btn-danger delete-room" data-id="{{ $room->id }}">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -136,4 +136,4 @@
             @endif
         });
     </script>
-@stop 
+@stop

@@ -47,11 +47,8 @@ class DoctorController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make('password123'), // Default password
+            'role' => 'doctor' // Set role directly in users table
         ]);
-
-        // Assign doctor role
-        $doctorRole = Role::where('slug', 'doctor')->first();
-        $user->assignRole($doctorRole);
 
         // Create doctor profile
         $doctor = Doctor::create([

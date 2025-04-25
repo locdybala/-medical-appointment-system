@@ -3,40 +3,41 @@
     <div class="container py-5">
         <div class="row g-5">
             <div class="col-lg-3 col-md-6">
-                <h5 class="text-light mb-4">Address</h5>
-                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
-                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
-                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
+                <h5 class="text-light mb-4">Địa chỉ</h5>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Đường ABC, Quận XYZ, TP.HCM</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+84 123 456 789</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@medical-appointment.com</p>
                 <div class="d-flex pt-2">
-                    <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-youtube"></i></a>
-                    <a class="btn btn-outline-light btn-social rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
-                <h5 class="text-light mb-4">Services</h5>
-                <a class="btn btn-link" href="">Cardiology</a>
-                <a class="btn btn-link" href="">Pulmonary</a>
-                <a class="btn btn-link" href="">Neurology</a>
-                <a class="btn btn-link" href="">Orthopedics</a>
-                <a class="btn btn-link" href="">Laboratory</a>
+                <h5 class="text-light mb-4">Liên kết nhanh</h5>
+                <a class="btn btn-link" href="{{ route('home') }}">Trang chủ</a>
+                <a class="btn btn-link" href="{{ route('about') }}">Giới thiệu</a>
+                <a class="btn btn-link" href="{{ route('doctors') }}">Bác sĩ</a>
+                <a class="btn btn-link" href="{{ route('specialties') }}">Chuyên khoa</a>
+                <a class="btn btn-link" href="{{ route('contact.index') }}">Liên hệ</a>
             </div>
             <div class="col-lg-3 col-md-6">
-                <h5 class="text-light mb-4">Quick Links</h5>
-                <a class="btn btn-link" href="">About Us</a>
-                <a class="btn btn-link" href="">Contact Us</a>
-                <a class="btn btn-link" href="">Our Services</a>
-                <a class="btn btn-link" href="">Terms & Condition</a>
-                <a class="btn btn-link" href="">Support</a>
+                <h5 class="text-light mb-4">Dịch vụ</h5>
+                <a class="btn btn-link" href="{{ route('appointments.create') }}">Đặt lịch khám</a>
+                <a class="btn btn-link" href="{{ route('appointments.history') }}">Lịch sử khám</a>
+                <a class="btn btn-link" href="#">Tư vấn trực tuyến</a>
+                <a class="btn btn-link" href="#">Xét nghiệm</a>
+                <a class="btn btn-link" href="#">Chăm sóc tại nhà</a>
             </div>
             <div class="col-lg-3 col-md-6">
-                <h5 class="text-light mb-4">Newsletter</h5>
-                <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-                <div class="position-relative mx-auto" style="max-width: 400px;">
-                    <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                    <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-                </div>
+                <h5 class="text-light mb-4">Giờ làm việc</h5>
+                <p class="mb-1">Thứ 2 - Thứ 6</p>
+                <h6 class="text-light">08:00 - 17:00</h6>
+                <p class="mb-1">Thứ 7</p>
+                <h6 class="text-light">08:00 - 12:00</h6>
+                <p class="mb-1">Chủ nhật</p>
+                <h6 class="text-light">Nghỉ</h6>
             </div>
         </div>
     </div>
@@ -44,7 +45,7 @@
         <div class="copyright">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved.
+                    &copy; <a class="border-bottom" href="{{ route('home') }}">{{ config('app.name') }}</a>, All Right Reserved.
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
@@ -56,4 +57,5 @@
         </div>
     </div>
 </div>
+
 <!-- Footer End -->

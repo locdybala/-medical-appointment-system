@@ -51,7 +51,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/doctors', [FrontendDoctorController::class, 'index'])->name('doctors');
 Route::get('/specialties', [FrontendSpecialtyController::class, 'index'])->name('specialties');
-Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/specialty/{id}', [FrontendSpecialtyController::class, 'show'])->name('specialties.show');
 Route::get('/doctors/{id}', [FrontendDoctorController::class, 'show'])->name('doctors.show');
