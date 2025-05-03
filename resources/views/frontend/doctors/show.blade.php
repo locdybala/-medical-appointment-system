@@ -8,7 +8,9 @@
             <div class="col-lg-4">
                 <div class="member" data-aos="fade-up" data-aos-delay="100">
                     <div class="member-img">
-                        <img src="{{ $doctor->image ?? asset('frontend/assets/img/doctors/doctor-1.jpg') }}" class="img-fluid" alt="">
+                        <div class="overflow-hidden">
+                            <img class="img-fluid" src="{{ $doctor->avatar ? asset($doctor->avatar) : asset('frontend/img/team-1.jpg') }}" alt="{{ $doctor->name }}">
+                        </div>
                         <div class="social">
                             <a href="#"><i class="bi bi-twitter"></i></a>
                             <a href="#"><i class="bi bi-facebook"></i></a>
@@ -33,14 +35,14 @@
                             <ul>
                                 <li><i class="bi bi-check-circle"></i> <strong>Kinh nghiệm:</strong> {{ $doctor->experience }} năm</li>
                                 <li><i class="bi bi-check-circle"></i> <strong>Học vị:</strong> {{ $doctor->qualification }}</li>
-                                <li><i class="bi bi-check-circle"></i> <strong>Phòng khám:</strong> {{ $doctor->room->name }}</li>
+                                <li><i class="bi bi-check-circle"></i> <strong>Phòng khám:</strong> {{ $doctor->room->name ?? 'Chưa thuộc phòng nào' }}</li>
                             </ul>
                         </div>
                         <div class="col-md-6">
                             <ul>
                                 <li><i class="bi bi-check-circle"></i> <strong>Email:</strong> {{ $doctor->email }}</li>
                                 <li><i class="bi bi-check-circle"></i> <strong>Điện thoại:</strong> {{ $doctor->phone }}</li>
-                                <li><i class="bi bi-check-circle"></i> <strong>Trạng thái:</strong> 
+                                <li><i class="bi bi-check-circle"></i> <strong>Trạng thái:</strong>
                                     @if($doctor->is_active)
                                         <span class="badge bg-success">Đang làm việc</span>
                                     @else
@@ -52,41 +54,21 @@
                     </div>
                 </div>
 
-                <div class="schedule mt-4">
-                    <h3>Lịch làm việc</h3>
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Thứ</th>
-                                    <th>Giờ làm việc</th>
-                                    <th>Trạng thái</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($doctor->schedules as $schedule)
-                                <tr>
-                                    <td>{{ $schedule->day_of_week }}</td>
-                                    <td>{{ $schedule->start_time }} - {{ $schedule->end_time }}</td>
-                                    <td>
-                                        @if($schedule->is_available)
-                                            <span class="badge bg-success">Còn trống</span>
-                                        @else
-                                            <span class="badge bg-danger">Đã đặt</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
                 <div class="mt-4">
-                    <a href="{{ route('appointment.create', ['doctor' => $doctor->id]) }}" class="btn btn-primary">Đặt lịch khám</a>
+                    <div class="appointment-info">
+                        <h4>Thông tin đặt lịch</h4>
+                        <ul>
+                            <li><i class="bi bi-clock"></i> <strong>Giờ làm việc:</strong> 8:00 - 17:00 (Thứ 2 - Thứ 6)</li>
+                            <li><i class="bi bi-cash"></i> <strong>Phí khám:</strong> {{ $doctor->consultation_fee > 0 ? number_format($doctor->consultation_fee, 0, ',', '.') . ' VNĐ' : 'Thanh toán sau' }}</li>
+                            <li><i class="bi bi-info-circle"></i> <strong>Lưu ý:</strong> Vui lòng đặt lịch trước ít nhất 24 giờ</li>
+                        </ul>
+                    </div>
+                    <a href="{{ route('appointments.create', ['doctor' => $doctor->id]) }}" class="btn btn-primary">
+                        <i class="bi bi-calendar-plus"></i> Đặt lịch khám
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-@endsection 
+@endsection

@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Appointment;
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AppointmentHistoryController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $appointments = Appointment::with(['doctor.user', 'doctor.specialty'])
-            ->where('patient_id', auth()->id())
+        $appointments = auth('patient')->user()
+            ->appointments()
+            ->with(['doctor.specialty', 'doctor.user'])
             ->latest()
             ->paginate(10);
 
         return view('frontend.appointments.history', compact('appointments'));
     }
-} 
+}

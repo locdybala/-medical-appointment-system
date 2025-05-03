@@ -98,6 +98,20 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="consultation_fee">Phí khám <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" class="form-control @error('consultation_fee') is-invalid @enderror"
+                                    id="consultation_fee" name="consultation_fee" value="{{ old('consultation_fee', 200000) }}" required min="0" step="1000">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">VNĐ</span>
+                                </div>
+                            </div>
+                            @error('consultation_fee')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
                             <label for="description">Mô tả</label>
                             <textarea class="form-control @error('description') is-invalid @enderror"
                                 id="description" name="description" rows="3">{{ old('description') }}</textarea>

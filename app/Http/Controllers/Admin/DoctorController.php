@@ -37,6 +37,7 @@ class DoctorController extends Controller
             'qualification' => 'required|string',
             'experience' => 'required|string',
             'description' => 'nullable|string',
+            'consultation_fee' => 'required|numeric|min:0',
             'is_active' => 'boolean'
         ]);
 
@@ -46,11 +47,8 @@ class DoctorController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make('password123'), // Default password
+            'role' => 'doctor' // Set role directly in users table
         ]);
-
-        // Assign doctor role
-        $doctorRole = Role::where('slug', 'doctor')->first();
-        $user->assignRole($doctorRole);
 
         // Create doctor profile
         $doctor = Doctor::create([
@@ -60,6 +58,7 @@ class DoctorController extends Controller
             'qualification' => $request->qualification,
             'experience' => $request->experience,
             'description' => $request->description,
+            'consultation_fee' => $request->consultation_fee,
             'is_active' => $request->is_active ?? true
         ]);
 
@@ -85,6 +84,7 @@ class DoctorController extends Controller
             'qualification' => 'required|string',
             'experience' => 'required|string',
             'description' => 'nullable|string',
+            'consultation_fee' => 'required|numeric|min:0',
             'is_active' => 'boolean'
         ]);
 
@@ -102,6 +102,7 @@ class DoctorController extends Controller
             'qualification' => $request->qualification,
             'experience' => $request->experience,
             'description' => $request->description,
+            'consultation_fee' => $request->consultation_fee,
             'is_active' => $request->is_active ?? true
         ]);
 

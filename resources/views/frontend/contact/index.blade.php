@@ -56,13 +56,13 @@
                 <div class="card-body">
                     <h5 class="card-title">Địa chỉ</h5>
                     <p class="card-text">123 Đường ABC, Quận XYZ, Thành phố Hồ Chí Minh</p>
-                    
+
                     <h5 class="card-title mt-4">Điện thoại</h5>
                     <p class="card-text">(84) 123 456 789</p>
-                    
+
                     <h5 class="card-title mt-4">Email</h5>
                     <p class="card-text">info@medical-appointment.com</p>
-                    
+
                     <h5 class="card-title mt-4">Giờ làm việc</h5>
                     <p class="card-text">
                         Thứ 2 - Thứ 6: 8:00 - 17:00<br>
@@ -74,4 +74,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

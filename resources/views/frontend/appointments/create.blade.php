@@ -35,15 +35,24 @@
                     <select name="specialty_id" id="specialty_id" class="form-select" required>
                         <option value="">Chọn chuyên khoa</option>
                         @foreach($specialties as $specialty)
-                            <option value="{{ $specialty->id }}">{{ $specialty->name }}</option>
+                            <option value="{{ $specialty->id }}"
+                                @if(isset($doctor) && $doctor->specialty_id == $specialty->id) selected @endif>
+                                {{ $specialty->name }}
+                            </option>
                         @endforeach
                     </select>
+                    <div id="no-doctors-message" class="text-danger mt-2" style="display: none;">
+                        Hiện tại không có bác sĩ nào trong chuyên khoa này
+                    </div>
                 </div>
 
                 <div class="col-md-4 form-group mt-3 mt-md-0">
                     <label for="doctor_id">Bác sĩ</label>
-                    <select name="doctor_id" id="doctor_id" class="form-select" disabled required>
-                        <option value="">Vui lòng chọn chuyên khoa trước</option>
+                    <select name="doctor_id" id="doctor_id" class="form-select" required disabled>
+                        <option value="">Chọn bác sĩ</option>
+                        @if(isset($doctor))
+                            <option value="{{ $doctor->id }}" selected>{{ $doctor->user->name }}</option>
+                        @endif
                     </select>
                 </div>
 
@@ -51,10 +60,13 @@
                 <div class="col-md-4 doctor-info" style="display: none;">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="doctor-name"></h5>
-                            <p class="doctor-specialty"></p>
-                            <p class="doctor-experience"></p>
-                            <p class="consultation-fee"></p>
+                            <h5 class="doctor-name mb-3"></h5>
+                            <p class="doctor-specialty mb-2"></p>
+                            <p class="doctor-experience mb-3"></p>
+                            <div class="form-group">
+                                <label>Phí khám</label>
+                                <input type="text" class="form-control consultation-fee" readonly>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -62,7 +74,10 @@
                 <!-- Bước 2: Chọn ngày và giờ khám -->
                 <div class="col-md-4 form-group mt-3">
                     <label for="appointment_date">Ngày khám</label>
-                    <input type="date" name="appointment_date" class="form-control" id="appointment_date" min="{{ date('Y-m-d') }}" disabled required>
+                    <input type="date" name="appointment_date" class="form-control" id="appointment_date"
+                           min="{{ date('Y-m-d') }}"
+                           disabled
+                           required>
                 </div>
 
                 <div class="col-md-4 form-group mt-3">
@@ -71,7 +86,6 @@
                         <!-- Các slot giờ sẽ được thêm vào đây bằng JavaScript -->
                     </div>
                     <input type="hidden" name="appointment_time" id="appointment_time" required>
-                    <div class="invalid-feedback">Vui lòng chọn giờ khám</div>
                 </div>
 
                 <!-- Bước 3: Thông tin bệnh nhân -->
@@ -119,136 +133,162 @@ document.addEventListener('DOMContentLoaded', function() {
     const doctorInfo = document.querySelector('.doctor-info');
     const appointmentTimeInput = document.getElementById('appointment_time');
     const submitButton = document.getElementById('submitButton');
-    const appointmentForm = document.getElementById('appointmentForm');
+    const noDoctorsMessage = document.getElementById('no-doctors-message');
 
     // Khi chọn chuyên khoa
     specialtySelect.addEventListener('change', async function() {
         const specialtyId = this.value;
-        if (!specialtyId) {
-            doctorSelect.innerHTML = '<option value="">Vui lòng chọn chuyên khoa trước</option>';
-            doctorSelect.disabled = true;
-            return;
-        }
+        resetForm();
+
+        if (!specialtyId) return;
 
         try {
-            // Lấy danh sách bác sĩ theo chuyên khoa
-            const response = await fetch(`/specialties/${specialtyId}/doctors`);
-            const doctors = await response.json();
-
-            doctorSelect.innerHTML = '<option value="">Chọn bác sĩ</option>';
-            doctors.forEach(doctor => {
-                doctorSelect.innerHTML += `<option value="${doctor.id}">${doctor.name}</option>`;
+            const response = await fetch(`/frontend/specialties/${specialtyId}/doctors`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.message || 'Không thể lấy danh sách bác sĩ');
+            }
+
+            const doctors = data.data || [];
+
+            if (doctors.length === 0) {
+                noDoctorsMessage.style.display = 'block';
+                return;
+            }
+
+            doctors.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor.id;
+                option.textContent = doctor.user.name;
+                option.dataset.name = doctor.user.name;
+                option.dataset.specialty = doctor.specialty.name;
+                option.dataset.experience = doctor.experience;
+                option.dataset.fee = doctor.consultation_fee;
+                doctorSelect.appendChild(option);
+            });
+
             doctorSelect.disabled = false;
+            noDoctorsMessage.style.display = 'none';
         } catch (error) {
-            console.error('Error fetching doctors:', error);
+            console.error('Error:', error);
+            noDoctorsMessage.style.display = 'block';
+            noDoctorsMessage.textContent = error.message || 'Không thể lấy danh sách bác sĩ. Vui lòng thử lại sau.';
         }
     });
 
     // Khi chọn bác sĩ
-    doctorSelect.addEventListener('change', async function() {
-        const doctorId = this.value;
-        if (!doctorId) {
-            doctorInfo.style.display = 'none';
-            dateInput.disabled = true;
-            dateInput.value = '';
-            appointmentTimeInput.value = '';
-            slotsContainer.innerHTML = '';
-            submitButton.disabled = true;
+    doctorSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+
+        if (!selectedOption.value) {
+            resetForm();
             return;
         }
 
-        try {
-            // Lấy thông tin bác sĩ
-            const response = await fetch(`/specialties/${specialtySelect.value}/doctors`);
-            const doctors = await response.json();
-            const doctor = doctors.find(d => d.id == doctorId);
+        // Hiển thị thông tin bác sĩ
+        doctorInfo.style.display = 'block';
+        doctorInfo.querySelector('.doctor-name').textContent = selectedOption.dataset.name;
+        doctorInfo.querySelector('.doctor-specialty').textContent = selectedOption.dataset.specialty;
+        doctorInfo.querySelector('.doctor-experience').textContent = `${selectedOption.dataset.experience} năm kinh nghiệm`;
 
-            if (doctor) {
-                // Hiển thị thông tin bác sĩ
-                doctorInfo.style.display = 'block';
-                doctorInfo.querySelector('.doctor-name').textContent = doctor.name;
-                doctorInfo.querySelector('.doctor-specialty').textContent = doctor.specialty;
-                doctorInfo.querySelector('.doctor-experience').textContent = `${doctor.experience} năm kinh nghiệm`;
-                doctorInfo.querySelector('.consultation-fee').textContent = `Phí khám: ${doctor.consultation_fee} VNĐ`;
-                
-                // Cập nhật tổng chi phí
-                document.querySelector('.consultation-fee-summary').textContent = `${doctor.consultation_fee} VNĐ`;
-                document.querySelector('.total-fee').textContent = `${doctor.consultation_fee} VNĐ`;
+        // Hiển thị phí khám
+        const fee = parseInt(selectedOption.dataset.fee);
+        const feeDisplay = fee > 0
+            ? `${fee.toLocaleString('vi-VN')} VNĐ`
+            : 'Thanh toán sau';
 
-                // Reset và enable date input
-                dateInput.value = '';
-                dateInput.disabled = false;
-                appointmentTimeInput.value = '';
-                slotsContainer.innerHTML = '';
-                submitButton.disabled = true;
-            }
-        } catch (error) {
-            console.error('Error fetching doctor details:', error);
-        }
+        doctorInfo.querySelector('.consultation-fee').value = feeDisplay;
+        document.querySelector('.consultation-fee-summary').textContent = feeDisplay;
+        document.querySelector('.total-fee').textContent = feeDisplay;
+
+        // Enable date input
+        dateInput.disabled = false;
+        dateInput.value = '';
+        slotsContainer.innerHTML = '';
+        appointmentTimeInput.value = '';
     });
 
     // Khi chọn ngày
     dateInput.addEventListener('change', async function() {
         const doctorId = doctorSelect.value;
         const date = this.value;
+        slotsContainer.innerHTML = '';
+        appointmentTimeInput.value = '';
+        submitButton.disabled = true;
+
         if (!doctorId || !date) return;
 
         try {
-            // Reset trạng thái
-            slotsContainer.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-            appointmentTimeInput.value = '';
+            const response = await fetch(`/frontend/doctors/${doctorId}/available-slots?date=${date}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            });
 
-            // Lấy danh sách giờ khám có sẵn
-            const response = await fetch(`/appointments/available-slots?doctor_id=${doctorId}&date=${date}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
             const data = await response.json();
 
-            if (data.success) {
-                slotsContainer.innerHTML = '';
-                data.slots.forEach(slot => {
-                    const button = document.createElement('button');
-                    button.type = 'button';
-                    button.className = 'btn btn-outline-primary m-1 time-slot';
-                    button.textContent = slot.display;
-                    button.dataset.time = slot.time;
-                    button.addEventListener('click', function() {
-                        // Xóa active class từ tất cả các button
-                        document.querySelectorAll('.time-slot').forEach(btn => {
-                            btn.classList.remove('active');
-                        });
-                        // Thêm active class cho button được chọn
-                        this.classList.add('active');
-                        // Cập nhật giá trị cho input ẩn
-                        appointmentTimeInput.value = this.dataset.time;
-                        submitButton.disabled = false;
-                    });
-                    slotsContainer.appendChild(button);
-                });
-            } else {
-                slotsContainer.innerHTML = `<div class="alert alert-warning">${data.message}</div>`;
+            if (!data.success) {
+                throw new Error(data.message || 'Không thể lấy danh sách giờ khám');
             }
+
+            const slots = data.data || [];
+
+            if (slots.length === 0) {
+                slotsContainer.innerHTML = '<div class="alert alert-info">Không có giờ khám nào trong ngày này</div>';
+                return;
+            }
+
+            slots.forEach(slot => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'btn btn-outline-primary m-1 time-slot';
+                button.textContent = slot;
+                button.onclick = function() {
+                    document.querySelectorAll('.time-slot').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    appointmentTimeInput.value = slot;
+                    submitButton.disabled = false;
+                };
+                slotsContainer.appendChild(button);
+            });
         } catch (error) {
-            console.error('Error fetching available slots:', error);
-            slotsContainer.innerHTML = '<div class="alert alert-danger">Có lỗi xảy ra khi lấy danh sách giờ khám</div>';
+            console.error('Error:', error);
+            slotsContainer.innerHTML = `<div class="alert alert-danger">${error.message || 'Không thể lấy danh sách giờ khám'}</div>`;
         }
     });
 
-    // Validate form trước khi submit
-    appointmentForm.addEventListener('submit', function(e) {
-        if (!appointmentTimeInput.value) {
-            e.preventDefault();
-            alert('Vui lòng chọn giờ khám');
-            return;
-        }
-
-        // Kiểm tra xem slot đã chọn có còn trống không
-        const selectedSlot = slotsContainer.querySelector('.btn.active');
-        if (!selectedSlot) {
-            e.preventDefault();
-            alert('Vui lòng chọn giờ khám');
-            return;
-        }
-    });
+    function resetForm() {
+        doctorSelect.innerHTML = '<option value="">Chọn bác sĩ</option>';
+        doctorSelect.disabled = true;
+        doctorInfo.style.display = 'none';
+        dateInput.disabled = true;
+        dateInput.value = '';
+        appointmentTimeInput.value = '';
+        slotsContainer.innerHTML = '';
+        submitButton.disabled = true;
+        document.querySelector('.consultation-fee-summary').textContent = '0 VNĐ';
+        document.querySelector('.total-fee').textContent = '0 VNĐ';
+        noDoctorsMessage.style.display = 'none';
+    }
 });
 </script>
 @endpush
@@ -259,6 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
+    margin-top: 10px;
 }
 
 .time-slots .btn {
@@ -273,6 +314,14 @@ document.addEventListener('DOMContentLoaded', function() {
 .doctor-info {
     transition: all 0.3s ease;
 }
+
+.doctor-info .card {
+    height: 100%;
+}
+
+.consultation-fee {
+    background-color: #f8f9fa;
+}
 </style>
 @endpush
-@endsection 
+@endsection

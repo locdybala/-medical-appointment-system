@@ -11,8 +11,9 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('specialty_id')->constrained('specialties');
-            $table->integer('max_patients')->default(10);
+            $table->text('description')->nullable();
+            $table->string('floor');
+            $table->integer('capacity')->default(1);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -22,4 +23,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('rooms');
     }
-}; 
+};

@@ -14,15 +14,16 @@ class DoctorController extends Controller
         $doctors = Doctor::with('specialty')
             ->where('is_active', true)
             ->paginate(12);
-        
+
         $specialties = Specialty::where('is_active', true)->get();
-        
+
         return view('frontend.doctors.index', compact('doctors', 'specialties'));
     }
 
-    public function show(Doctor $doctor)
+    public function show($id)
     {
-        $doctor->load('specialty', 'schedules');
+        $doctor = Doctor::find($id);
+        $doctor->load('specialty', 'room');
         return view('frontend.doctors.show', compact('doctor'));
     }
 }

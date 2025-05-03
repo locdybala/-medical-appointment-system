@@ -320,11 +320,6 @@ return [
             'icon' => 'fas fa-user-md',
         ],
         [
-            'text' => 'Quản lý Lịch khám',
-            'url' => 'admin/schedules',
-            'icon' => 'fas fa-calendar-alt',
-        ],
-        [
             'text' => 'Quản lý Cuộc hẹn',
             'url' => 'admin/appointments',
             'icon' => 'fas fa-calendar-check',

@@ -40,7 +40,7 @@
                 <a href="{{ route('about') }}" class="nav-item nav-link {{ request()->routeIs('about') ? 'active' : '' }}">Giới thiệu</a>
                 <a href="{{ route('specialties') }}" class="nav-item nav-link {{ request()->routeIs('specialties') ? 'active' : '' }}">Chuyên khoa</a>
                 <a href="{{ route('doctors') }}" class="nav-item nav-link {{ request()->routeIs('doctors') ? 'active' : '' }}">Bác sĩ</a>
-                <a href="{{ route('contact') }}" class="nav-item nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Liên hệ</a>
+                <a href="{{ route('contact.index') }}" class="nav-item nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Liên hệ</a>
 
                 @auth('patient')
                     <div class="nav-item dropdown">

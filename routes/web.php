@@ -51,21 +51,24 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/doctors', [FrontendDoctorController::class, 'index'])->name('doctors');
 Route::get('/specialties', [FrontendSpecialtyController::class, 'index'])->name('specialties');
-Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/specialty/{id}', [FrontendSpecialtyController::class, 'show'])->name('specialties.show');
 Route::get('/doctors/{id}', [FrontendDoctorController::class, 'show'])->name('doctors.show');
 
 // Appointment Routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/appointments/create', [FrontendAppointmentController::class, 'create'])->name('appointments.create');
-    Route::post('/appointments', [FrontendAppointmentController::class, 'store'])->name('appointments.store');
+Route::middleware(['auth:patient'])->group(function () {
     Route::get('/appointments', [FrontendAppointmentController::class, 'index'])->name('appointments.index');
+    Route::get('/appointments/create', [FrontendAppointmentController::class, 'create'])->name('appointments.create');
+    Route::get('/appointments/history', [AppointmentHistoryController::class, 'index'])->name('appointments.history');
+    Route::post('/appointments', [FrontendAppointmentController::class, 'store'])->name('appointments.store');
+    Route::get('/appointments/{appointment}', [FrontendAppointmentController::class, 'show'])->name('appointments.show');
+    Route::delete('/appointments/{appointment}', [FrontendAppointmentController::class, 'destroy'])->name('appointments.destroy');
 });
 
-// AJAX routes
-Route::get('/specialties/{specialty}/doctors', [FrontendAppointmentController::class, 'getDoctorsBySpecialty'])->name('specialties.doctors');
-Route::get('/appointments/available-slots', [FrontendAppointmentController::class, 'getAvailableSlots'])->name('appointments.available-slots');
+// AJAX routes for appointments
+Route::get('/frontend/specialties/{specialty}/doctors', [FrontendAppointmentController::class, 'getDoctorsBySpecialty'])->name('frontend.specialties.doctors');
+Route::get('/frontend/doctors/{doctor}/available-slots', [FrontendAppointmentController::class, 'getAvailableSlots'])->name('frontend.doctors.available-slots');
 
 // Patient Auth Routes
 Route::middleware('guest:patient')->group(function () {
@@ -84,7 +87,6 @@ Route::middleware('auth:patient')->group(function () {
     // Appointment routes
     Route::get('/appointment', [FrontendAppointmentController::class, 'create'])->name('appointment.create');
     Route::post('/appointment', [FrontendAppointmentController::class, 'store'])->name('appointment.store');
-    Route::get('/appointments/history', [AppointmentHistoryController::class, 'index'])->name('appointments.history');
 });
 
 /*
@@ -113,6 +115,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('schedules', ScheduleController::class);
         Route::resource('posts', PostController::class);
         Route::resource('categories', CategoryController::class);
+        Route::resource('rooms', \App\Http\Controllers\Admin\RoomController::class);
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     });
 });
 

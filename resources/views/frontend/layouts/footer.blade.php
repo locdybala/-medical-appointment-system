@@ -25,7 +25,7 @@
                 <h5 class="text-light mb-4">Liên kết nhanh</h5>
                 <a class="btn btn-link" href="{{ route('home') }}">Trang chủ</a>
                 <a class="btn btn-link" href="{{ route('doctors') }}">Đội ngũ bác sĩ</a>
-                <a class="btn btn-link" href="{{ route('contact') }}">Liên hệ</a>
+                <a class="btn btn-link" href="{{ route('contact.index') }}">Liên hệ</a>
                 <a class="btn btn-link" href="#">Điều khoản sử dụng</a>
                 <a class="btn btn-link" href="#">Chính sách bảo mật</a>
             </div>
@@ -46,7 +46,7 @@
         <div class="copyright">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="border-bottom" href="{{ route('home') }}">Phòng khám đa khoa</a>, All Right Reserved.
+                    &copy; <a class="border-bottom" href="{{ route('home') }}">{{ config('app.name') }}</a>, All Right Reserved.
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <!--/*** This template is free as long as you keep the footer author's credit link/attribution link/backlink. If you'd like to use the template without the footer author's credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
@@ -58,4 +58,5 @@
         </div>
     </div>
 </div>
+
 <!-- Footer End -->

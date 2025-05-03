@@ -1,11 +1,11 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-<section class="appointment-history">
+<section class="appointments">
     <div class="container">
         <div class="section-title">
-            <h2>Lịch sử đặt khám</h2>
-            <p>Danh sách tất cả các cuộc hẹn của bạn</p>
+            <h2>Danh sách lịch hẹn</h2>
+            <p>Quản lý các cuộc hẹn khám của bạn</p>
         </div>
 
         @if(session('success'))
@@ -75,7 +75,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="8" class="text-center">Bạn chưa có lịch sử khám nào</td>
+                                        <td colspan="8" class="text-center">Bạn chưa có lịch hẹn nào</td>
                                     </tr>
                                     @endforelse
                                 </tbody>
@@ -94,7 +94,7 @@
 
 @push('styles')
 <style>
-.appointment-history {
+.appointments {
     padding: 60px 0;
 }
 .section-title {

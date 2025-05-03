@@ -18,6 +18,7 @@ class Doctor extends Model
         'qualification',
         'experience',
         'is_active',
+        'consultation_fee',
     ];
 
     protected $casts = [
