@@ -43,63 +43,52 @@
                             <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}"
-                           href="{{ route('admin.doctors.index') }}">
-                            <i class="bi bi-person-badge"></i> Bác sĩ
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}"
-                           href="{{ route('admin.patients.index') }}">
-                            <i class="bi bi-people"></i> Bệnh nhân
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.appointments.*') ? 'active' : '' }}"
-                           href="{{ route('admin.appointments.index') }}">
-                            <i class="bi bi-calendar-check"></i> Lịch hẹn
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}"
-                           href="{{ route('admin.schedules.index') }}">
-                            <i class="bi bi-calendar-week"></i> Lịch làm việc
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.specialties.*') ? 'active' : '' }}"
-                           href="{{ route('admin.specialties.index') }}">
-                            <i class="bi bi-hospital"></i> Chuyên khoa
-                        </a>
-                    </li>
-                    <li class="nav-item">
 
-                  <a class="nav-link {{ request()->routeIs('admin.rooms.*') ? 'active' : '' }}"
-                           href="{{ route('admin.rooms.index') }}">
-                            <i class="bi bi-door-open"></i> Phòng khám
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}"
-                           href="{{ route('admin.posts.index') }}">
-                            <i class="bi bi-newspaper"></i> Bài viết
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
-                           href="{{ route('admin.categories.index') }}">
-                            <i class="bi bi-tags"></i> Danh mục
-                        </a>
-                    </li>
-                    <li class="nav-item mt-3">
-                        <form action="{{ route('admin.logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="nav-link btn btn-link text-start w-100">
-                                <i class="bi bi-box-arrow-right"></i> Đăng xuất
-                            </button>
-                        </form>
-                    </li>
+                    @if(auth()->user()->isAdmin())
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}"
+                               href="{{ route('admin.doctors.index') }}">
+                                <i class="bi bi-person-badge"></i> Bác sĩ
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}"
+                               href="{{ route('admin.patients.index') }}">
+                                <i class="bi bi-people"></i> Bệnh nhân
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.appointments.*') ? 'active' : '' }}"
+                               href="{{ route('admin.appointments.index') }}">
+                                <i class="bi bi-calendar-check"></i> Lịch hẹn
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.specialties.*') ? 'active' : '' }}"
+                               href="{{ route('admin.specialties.index') }}">
+                                <i class="bi bi-hospital"></i> Chuyên khoa
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.rooms.*') ? 'active' : '' }}"
+                               href="{{ route('admin.rooms.index') }}">
+                                <i class="bi bi-door-open"></i> Phòng khám
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                               href="{{ route('admin.users.index') }}">
+                                <i class="bi bi-person"></i> Người dùng
+                            </a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.my-appointments') ? 'active' : '' }}"
+                               href="{{ route('admin.my-appointments') }}">
+                                <i class="bi bi-calendar-check"></i> Lịch khám của tôi
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </div>
 

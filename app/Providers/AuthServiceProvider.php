@@ -6,6 +6,7 @@ namespace App\Providers;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Models\Appointment;
 use App\Policies\AppointmentPolicy;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,13 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Đăng ký các Gate
+        Gate::define('isAdmin', function($user) {
+            return $user->isAdmin();
+        });
+
+        Gate::define('isDoctor', function($user) {
+            return $user->isDoctor();
+        });
     }
 }

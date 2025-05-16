@@ -11,15 +11,15 @@ class Room extends Model
 
     protected $fillable = [
         'name',
-        'description',
         'floor',
+        'description',
         'capacity',
-        'is_active',
+        'is_active'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
-        'capacity' => 'integer',
+        'capacity' => 'integer'
     ];
 
     public function doctors()

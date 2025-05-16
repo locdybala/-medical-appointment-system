@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
-use App\Models\Appointment;
+use Carbon\Carbon;
+use App\Models\Room;
 use App\Models\Doctor;
 use App\Models\Schedule;
 use App\Models\Specialty;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Models\Appointment;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class AppointmentController extends Controller
 {
@@ -34,6 +35,7 @@ class AppointmentController extends Controller
     public function create(Request $request): View
     {
         $specialties = Specialty::where('is_active', true)->get();
+        $rooms = Room::where('is_active', true)->get();
         $doctor = null;
 
         if ($request->has('doctor')) {
@@ -43,7 +45,7 @@ class AppointmentController extends Controller
                 ->first();
         }
 
-        return view('frontend.appointments.create', compact('specialties', 'doctor'));
+        return view('frontend.appointments.create', compact('specialties', 'rooms', 'doctor'));
     }
 
     public function getDoctorsBySpecialty(Specialty $specialty)

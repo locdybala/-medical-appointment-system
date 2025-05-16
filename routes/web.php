@@ -102,11 +102,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('login', [\App\Http\Controllers\Admin\AuthController::class, 'login'])->name('login.post');
     });
 
-    // Protected Admin Routes
+    // Protected Admin Routes - Cho cả admin và doctor
     Route::middleware(['auth:web', 'role:admin,doctor'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::post('logout', [\App\Http\Controllers\Admin\AuthController::class, 'logout'])->name('logout');
+        
+        // Routes cho bác sĩ xem lịch khám của mình
+        Route::get('/my-appointments', [AppointmentController::class, 'myAppointments'])->name('my-appointments');
+    });
 
+    // Routes chỉ dành cho admin
+    Route::middleware(['auth:web', 'admin.only'])->group(function () {
         // Resource Routes
         Route::resource('specialties', SpecialtyController::class);
         Route::resource('doctors', DoctorController::class);

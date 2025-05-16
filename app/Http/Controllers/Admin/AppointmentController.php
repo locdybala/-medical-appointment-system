@@ -79,4 +79,23 @@ class AppointmentController extends Controller
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Lịch hẹn đã được xóa thành công.');
     }
+
+    public function myAppointments()
+    {
+        $user = auth()->user();
+        $doctor = $user->doctor;
+        
+        if (!$doctor) {
+            return redirect()->route('admin.dashboard')
+                ->with('error', 'Không tìm thấy thông tin bác sĩ.');
+        }
+
+        $appointments = Appointment::with(['patient', 'doctor'])
+            ->where('doctor_id', $doctor->id)
+            ->orderBy('appointment_date', 'desc')
+            ->orderBy('appointment_time', 'desc')
+            ->paginate(10);
+
+        return view('admin.appointments.my-appointments', compact('appointments'));
+    }
 }

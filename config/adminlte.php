@@ -299,56 +299,72 @@ return [
     */
 
     'menu' => [
+        // Navbar items:
         [
-            'text' => 'Trang chủ',
-            'url' => 'admin/dashboard',
-            'icon' => 'fas fa-tachometer-alt',
+            'type'         => 'navbar-search',
+            'text'         => 'search',
+            'topnav_right' => true,
         ],
         [
-            'text' => 'Quản lý Phòng khám',
-            'url' => 'admin/rooms',
-            'icon' => 'fas fa-door-open',
+            'type'         => 'fullscreen-widget',
+            'topnav_right' => true,
+        ],
+
+        // Sidebar items:
+        [
+            'type' => 'sidebar-menu-search',
+            'text' => 'search',
         ],
         [
-            'text' => 'Quản lý Chuyên khoa',
-            'url' => 'admin/specialties',
-            'icon' => 'fas fa-stethoscope',
+            'text'        => 'Dashboard',
+            'url'         => 'admin/dashboard',
+            'icon'        => 'fas fa-fw fa-tachometer-alt',
         ],
         [
-            'text' => 'Quản lý Bác sĩ',
-            'url' => 'admin/doctors',
-            'icon' => 'fas fa-user-md',
+            'text'        => 'Lịch khám của tôi',
+            'url'         => 'admin/my-appointments',
+            'icon'        => 'fas fa-fw fa-calendar-check',
+            'can'         => 'isDoctor',
         ],
         [
-            'text' => 'Quản lý Cuộc hẹn',
-            'url' => 'admin/appointments',
-            'icon' => 'fas fa-calendar-check',
+            'header' => 'QUẢN LÝ HỆ THỐNG',
+            'can'    => 'isAdmin',
         ],
         [
-            'text' => 'Quản lý Bệnh nhân',
-            'url' => 'admin/patients',
-            'icon' => 'fas fa-user-injured',
+            'text'        => 'Bác sĩ',
+            'url'         => 'admin/doctors',
+            'icon'        => 'fas fa-fw fa-user-md',
+            'can'         => 'isAdmin',
         ],
         [
-            'text' => 'Quản lý Người dùng',
-            'url' => 'admin/users',
-            'icon' => 'fas fa-users-cog',
+            'text'        => 'Bệnh nhân',
+            'url'         => 'admin/patients',
+            'icon'        => 'fas fa-fw fa-users',
+            'can'         => 'isAdmin',
         ],
         [
-            'text' => 'Quản lý Bài viết',
-            'icon' => 'fas fa-newspaper',
-            'submenu' => [
-                [
-                    'text' => 'Danh mục',
-                    'url' => 'admin/categories',
-                    'icon' => 'fas fa-folder',
-                ],
-                [
-                    'text' => 'Bài viết',
-                    'url' => 'admin/posts',
-                    'icon' => 'fas fa-file-alt',
-                ],
-            ],
+            'text'        => 'Lịch hẹn',
+            'url'         => 'admin/appointments',
+            'icon'        => 'fas fa-fw fa-calendar-alt',
+            'can'         => 'isAdmin',
+        ],
+        [
+            'text'        => 'Chuyên khoa',
+            'url'         => 'admin/specialties',
+            'icon'        => 'fas fa-fw fa-hospital',
+            'can'         => 'isAdmin',
+        ],
+        [
+            'text'        => 'Phòng khám',
+            'url'         => 'admin/rooms',
+            'icon'        => 'fas fa-fw fa-door-open',
+            'can'         => 'isAdmin',
+        ],
+        [
+            'text'        => 'Người dùng',
+            'url'         => 'admin/users',
+            'icon'        => 'fas fa-fw fa-user',
+            'can'         => 'isAdmin',
         ],
     ],
 
