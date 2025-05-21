@@ -89,6 +89,21 @@ Route::middleware('auth:patient')->group(function () {
     Route::post('/appointment', [FrontendAppointmentController::class, 'store'])->name('appointment.store');
 });
 
+// Frontend routes
+Route::prefix('frontend')->name('frontend.')->group(function () {
+    // Lấy danh sách phòng khám theo chuyên khoa
+    Route::get('/specialties/{specialty}/rooms', [App\Http\Controllers\Frontend\SpecialtyController::class, 'getRooms'])
+        ->name('specialties.rooms');
+    
+    // Lấy danh sách bác sĩ theo phòng khám
+    Route::get('/rooms/{room}/doctors', [App\Http\Controllers\Frontend\RoomController::class, 'getDoctors'])
+        ->name('rooms.doctors');
+
+    // Lấy thông tin chi tiết bác sĩ
+    Route::get('/doctors/{doctor}', [App\Http\Controllers\Frontend\DoctorController::class, 'getDoctorInfo'])
+        ->name('doctors.info');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Admin Routes

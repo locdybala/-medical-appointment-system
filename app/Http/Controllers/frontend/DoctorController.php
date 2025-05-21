@@ -26,4 +26,24 @@ class DoctorController extends Controller
         $doctor->load('specialty', 'room');
         return view('frontend.doctors.show', compact('doctor'));
     }
+
+    /**
+     * Lấy thông tin chi tiết bác sĩ
+     */
+    public function getDoctorInfo(Doctor $doctor)
+    {
+        try {
+            $doctor->load(['user', 'specialty', 'room']);
+
+            return response()->json([
+                'success' => true,
+                'data' => $doctor
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể lấy thông tin bác sĩ'
+            ], 500);
+        }
+    }
 }
