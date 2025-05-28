@@ -19,7 +19,7 @@
             @php
                 $user = auth()->user();
             @endphp
-            <a href="{{ $user->isDoctor() ? route('my-appointments') : route('admin.appointments.index') }}" class="btn btn-secondary">
+            <a href="{{ $user->isDoctor() ? route('admin.my-appointments') : route('admin.appointments.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Quay lại
             </a>
         </div>

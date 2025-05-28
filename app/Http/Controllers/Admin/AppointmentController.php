@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class AppointmentController extends Controller
 {
@@ -64,7 +64,7 @@ class AppointmentController extends Controller
             $appointment->update(['status' => $request->status]);
             $user = auth()->user();
             if ($user && $user->isDoctor()) {
-                return redirect()->route('my-appointments')->with('success', 'Lịch hẹn đã được xác nhận.');
+                return redirect()->route('admin.my-appointments')->with('success', 'Lịch hẹn đã được xác nhận.');
             }
             return back()->with('success', 'Lịch hẹn đã được xác nhận.');
         }
@@ -83,7 +83,7 @@ class AppointmentController extends Controller
         $appointment->update($request->all());
         $user = auth()->user();
         if ($user && $user->isDoctor()) {
-            return redirect()->route('my-appointments')->with('success', 'Lịch hẹn đã được cập nhật thành công.');
+            return redirect()->route('admin.my-appointments')->with('success', 'Lịch hẹn đã được cập nhật thành công.');
         }
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Lịch hẹn đã được cập nhật thành công.');
@@ -94,7 +94,7 @@ class AppointmentController extends Controller
         $appointment->delete();
         $user = auth()->user();
         if ($user && $user->isDoctor()) {
-            return redirect()->route('my-appointments')->with('success', 'Lịch hẹn đã được xóa thành công.');
+            return redirect()->route('admin.my-appointments')->with('success', 'Lịch hẹn đã được xóa thành công.');
         }
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Lịch hẹn đã được xóa thành công.');
