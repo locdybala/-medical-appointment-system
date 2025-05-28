@@ -1,23 +1,23 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\PatientController;
-use App\Http\Controllers\Admin\AppointmentController;
-use App\Http\Controllers\Admin\ScheduleController;
-use App\Http\Controllers\Admin\SpecialtyController;
-use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Frontend\AboutController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SpecialtyController;
+use App\Http\Controllers\Frontend\ContactController;
+use App\Http\Controllers\Admin\AppointmentController;
+use App\Http\Controllers\Frontend\PatientAuthController;
+use App\Http\Controllers\Frontend\AppointmentHistoryController;
 use App\Http\Controllers\Frontend\DoctorController as FrontendDoctorController;
 use App\Http\Controllers\Frontend\SpecialtyController as FrontendSpecialtyController;
 use App\Http\Controllers\Frontend\AppointmentController as FrontendAppointmentController;
-use App\Http\Controllers\Frontend\ContactController;
-use App\Http\Controllers\Frontend\AppointmentHistoryController;
-use App\Http\Controllers\Frontend\AboutController;
-use App\Http\Controllers\Frontend\PatientAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,6 +124,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         
         // Routes cho bác sĩ xem lịch khám của mình
         Route::get('/my-appointments', [AppointmentController::class, 'myAppointments'])->name('my-appointments');
+        Route::resource('appointments', AppointmentController::class);
     });
 
     // Routes chỉ dành cho admin
@@ -132,7 +133,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('specialties', SpecialtyController::class);
         Route::resource('doctors', DoctorController::class);
         Route::resource('patients', PatientController::class);
-        Route::resource('appointments', AppointmentController::class);
         Route::resource('schedules', ScheduleController::class);
         Route::resource('posts', PostController::class);
         Route::resource('categories', CategoryController::class);
