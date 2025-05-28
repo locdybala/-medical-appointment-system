@@ -59,7 +59,7 @@ class AppointmentController extends Controller
         // Nếu chỉ gửi status (bác sĩ xác nhận)
         if ($request->has('status') && count($request->all()) <= 4) {
             $request->validate([
-                'status' => 'required|in:pending,confirmed,cancelled',
+                'status' => 'required|in:pending,approved,rejected,completed,cancelled,no_show',
             ]);
             $appointment->update(['status' => $request->status]);
             $user = auth()->user();
