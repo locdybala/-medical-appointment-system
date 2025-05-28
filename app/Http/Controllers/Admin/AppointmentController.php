@@ -56,6 +56,20 @@ class AppointmentController extends Controller
 
     public function update(Request $request, Appointment $appointment)
     {
+        // Nếu chỉ gửi status (bác sĩ xác nhận)
+        if ($request->has('status') && count($request->all()) <= 4) {
+            $request->validate([
+                'status' => 'required|in:pending,confirmed,cancelled',
+            ]);
+            $appointment->update(['status' => $request->status]);
+            $user = auth()->user();
+            if ($user && $user->isDoctor()) {
+                return redirect()->route('my-appointments')->with('success', 'Lịch hẹn đã được xác nhận.');
+            }
+            return back()->with('success', 'Lịch hẹn đã được xác nhận.');
+        }
+
+        // Còn lại là update đầy đủ (admin)
         $request->validate([
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'required|exists:doctors,id',
@@ -67,7 +81,10 @@ class AppointmentController extends Controller
         ]);
 
         $appointment->update($request->all());
-
+        $user = auth()->user();
+        if ($user && $user->isDoctor()) {
+            return redirect()->route('my-appointments')->with('success', 'Lịch hẹn đã được cập nhật thành công.');
+        }
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Lịch hẹn đã được cập nhật thành công.');
     }
@@ -75,7 +92,10 @@ class AppointmentController extends Controller
     public function destroy(Appointment $appointment)
     {
         $appointment->delete();
-
+        $user = auth()->user();
+        if ($user && $user->isDoctor()) {
+            return redirect()->route('my-appointments')->with('success', 'Lịch hẹn đã được xóa thành công.');
+        }
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Lịch hẹn đã được xóa thành công.');
     }
