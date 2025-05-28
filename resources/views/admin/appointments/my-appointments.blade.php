@@ -44,20 +44,9 @@
                                 </td>
                                 <td>{{ Str::limit($appointment->symptoms, 50) }}</td>
                                 <td>
-                                    @switch($appointment->status)
-                                        @case('pending')
-                                            <span class="badge badge-warning">Chờ xác nhận</span>
-                                            @break
-                                        @case('confirmed')
-                                            <span class="badge badge-success">Đã xác nhận</span>
-                                            @break
-                                        @case('completed')
-                                            <span class="badge badge-info">Đã hoàn thành</span>
-                                            @break
-                                        @case('cancelled')
-                                            <span class="badge badge-danger">Đã hủy</span>
-                                            @break
-                                    @endswitch
+                                    <span class="badge badge-{{ $appointment->status_badge }}">
+                                        {{ $appointment->status_text }}
+                                    </span>
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.appointments.show', $appointment) }}" 
@@ -70,7 +59,7 @@
                                               class="d-inline">
                                             @csrf
                                             @method('PUT')
-                                            <input type="hidden" name="status" value="confirmed">
+                                            <input type="hidden" name="status" value="approved">
                                             <button type="submit" class="btn btn-sm btn-success">
                                                 <i class="fas fa-check"></i>
                                             </button>
