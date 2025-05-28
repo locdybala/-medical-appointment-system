@@ -27,12 +27,12 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $user = Auth::user();
+        if (Auth::guard('web')->attempt($credentials, $request->boolean('remember'))) {
+            $user = Auth::guard('web')->user();
 
             // Kiểm tra role của user
             if (!$user->isAdmin() && !$user->isDoctor()) {
-                Auth::logout();
+                Auth::guard('web')->logout();
                 return back()->withErrors([
                     'email' => 'Bạn không có quyền truy cập vào trang quản trị.',
                 ])->onlyInput('email');
@@ -53,11 +53,9 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
-
+        Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        dd('Đăng xuất thành công.');
-        return redirect('/admin/login')->with('success', 'Đăng xuất thành công.');
+        return redirect()->route('admin.login')->with('success', 'Đăng xuất thành công.');
     }
 }

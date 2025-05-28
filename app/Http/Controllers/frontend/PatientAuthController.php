@@ -37,9 +37,8 @@ class PatientAuthController extends Controller
     public function logout(Request $request)
     {
         Auth::guard('patient')->logout();
-        $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('/')->with('success', 'Đăng xuất thành công.');
     }
 
     public function showRegistrationForm()

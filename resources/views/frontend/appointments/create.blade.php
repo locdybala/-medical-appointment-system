@@ -350,6 +350,20 @@ $(document).ready(function() {
 
         if (!doctorId || !date) return;
 
+        // Kiểm tra ngày đặt lịch
+        const appointmentDate = new Date(date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset thời gian về 00:00:00
+
+        if (appointmentDate < today) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi!',
+                text: 'Vui lòng chọn ngày khám từ hôm nay trở đi'
+            });
+            return;
+        }
+
         try {
             const response = await $.ajax({
                 url: `/frontend/doctors/${doctorId}/available-slots`,
@@ -384,20 +398,57 @@ $(document).ready(function() {
      * Hiển thị các slot giờ khám
      */
     function displayTimeSlots(slots) {
+        const selectedDate = $dateInput.val();
+        const now = new Date();
+        let currentHour = now.getHours();
+        let currentMinute = now.getMinutes();
+        $slotsContainer.empty();
+
         slots.forEach(slot => {
-            const $button = $('<button>', {
-                type: 'button',
-                class: 'btn btn-outline-primary m-1 time-slot',
-                text: slot
-            }).on('click', function() {
-                $('.time-slot').removeClass('active');
-                $(this).addClass('active');
-                $appointmentTimeInput.val(slot);
-                $submitButton.prop('disabled', false);
-            });
-            $slotsContainer.append($button);
+            // Nếu là ngày hôm nay, chỉ hiển thị slot giờ >= giờ hiện tại
+            let showSlot = true;
+            if (selectedDate === now.toISOString().slice(0, 10)) {
+                const [slotHour, slotMinute] = slot.split(':').map(Number);
+                if (slotHour < currentHour || (slotHour === currentHour && slotMinute <= currentMinute)) {
+                    showSlot = false;
+                }
+            }
+            if (showSlot) {
+                const $button = $('<button>', {
+                    type: 'button',
+                    class: 'btn btn-outline-primary m-1 time-slot',
+                    text: slot
+                }).on('click', function() {
+                    $('.time-slot').removeClass('active');
+                    $(this).addClass('active');
+                    $appointmentTimeInput.val(slot);
+                    $submitButton.prop('disabled', false);
+                });
+                $slotsContainer.append($button);
+            }
         });
     }
+
+    // Kiểm tra slot khi submit form
+    $('#appointmentForm').on('submit', function(e) {
+        const selectedDate = $dateInput.val();
+        const selectedSlot = $appointmentTimeInput.val();
+        const now = new Date();
+        if (selectedDate === now.toISOString().slice(0, 10)) {
+            if (selectedSlot) {
+                const [slotHour, slotMinute] = selectedSlot.split(':').map(Number);
+                if (slotHour < now.getHours() || (slotHour === now.getHours() && slotMinute <= now.getMinutes())) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: 'Giờ khám đã qua, vui lòng chọn khung giờ khác.'
+                    });
+                    return false;
+                }
+            }
+        }
+    });
 
     /**
      * Reset form về trạng thái ban đầu

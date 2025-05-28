@@ -81,7 +81,8 @@ class AppointmentController extends Controller
             $date = Carbon::parse($request->date);
 
             // Kiểm tra ngày trong quá khứ
-            if ($date->isPast()) {
+            $today = now()->startOfDay();
+            if ($date->startOfDay()->lt($today)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Không thể đặt lịch cho ngày trong quá khứ'

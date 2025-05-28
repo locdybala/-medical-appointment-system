@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Doctor;
-use App\Models\Specialty;
+use App\Models\Role;
 use App\Models\Room;
 use App\Models\User;
-use App\Models\Role;
+use App\Models\Doctor;
+use App\Models\Specialty;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 
 class DoctorController extends Controller
@@ -46,10 +46,9 @@ class DoctorController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => Hash::make('password123'), // Default password
+            'password' => Hash::make('password'), // Default password
             'role' => 'doctor' // Set role directly in users table
         ]);
-
         // Create doctor profile
         $doctor = Doctor::create([
             'user_id' => $user->id,
